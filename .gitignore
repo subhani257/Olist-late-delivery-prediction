@@ -1,0 +1,17 @@
+# raw data is large and shouldn't live in git — everyone downloads it locally
+data/raw/*
+!data/raw/.gitkeep
+
+# jupyter
+.ipynb_checkpoints/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# OS junk
+.DS_Store
+Thumbs.db
