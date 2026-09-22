@@ -92,9 +92,26 @@ Each member owns their tables end-to-end — EDA, preprocessing, and feature eng
 | Member | Tables owned | Notebook | Output |
 |---|---|---|---|
 | **A** | Orders, target engineering | `01_orders_target_eda_preprocessing.ipynb` | `orders_clean.csv` |
-| **B** | Customers, sellers, geolocation | `02_customer_seller_geo_eda_preprocessing.ipynb` | `customers_sellers_geo_clean.csv` |
+| **B** | Customers, sellers, geolocation | `02_customer_seller_geo_eda_preprocessing.ipynb` | See Member B output contract below |
 | **C** | Order items, products, category translation | `03_products_items_eda_preprocessing.ipynb` | `products_items_clean.csv` |
 | **D** | Payments + final merge | `04_payments_eda_preprocessing.ipynb`, `05_final_merge_train_test_split.ipynb` | `payments_clean.csv` → merged dataset |
+
+### Member B output contract
+
+1. `data/processed/geolocation_zip_clean.csv`
+   - Grain: one row per ZIP prefix
+   - Purpose: cleaned ZIP-level lookup containing representative coordinates, location labels, and approved quality diagnostics
+2. `data/processed/customers_geo_clean.csv`
+   - Grain: one row per `customer_id`
+   - Purpose: cleaned and geographically enriched customer records
+3. `data/processed/sellers_geo_clean.csv`
+   - Grain: one row per `seller_id`
+   - Purpose: cleaned and geographically enriched seller records
+4. `data/processed/order_geo_features.csv`
+   - Grain: one row per `order_id`
+   - Purpose: primary Member B feature dataset for downstream order-level integration
+
+Member B's findings and decisions are maintained under **Member B — Customer, Seller and Geolocation Analysis** in [`report/findings_and_decisions.md`](report/findings_and_decisions.md).
 
 ## Workflow
 
