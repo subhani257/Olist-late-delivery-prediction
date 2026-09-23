@@ -140,7 +140,9 @@ Full-dataset target-derived geographic aggregates, such as regional late-deliver
 - Haversine distance is not road-network distance, route time, traffic, or carrier performance.
 - Missing coordinate endpoints leave 1,265 orders without distance.
 - State, region, distance, and agreement fields may be correlated or redundant.
-- Geographic concentration cannot be interpreted as lateness risk without the approved target.
+- Target-related geographic differences are observational associations and do not establish causality.
+- Small state, multi-seller, and missing-coordinate groups have less stable late-rate estimates.
+- The full-sample statistical tests support description only; feature stability must be checked after the chronological split.
 - Final statistical and model-based feature selection remains downstream.
 
 ### O. Processed outputs
@@ -154,19 +156,23 @@ All four Member B outputs have been created, reloaded, and validated:
 
 `order_geo_features.csv` is Member B's primary downstream order-level feature file. Reload validation confirms expected shapes and schemas, unique non-missing keys, zero exact output duplicates, five-character ZIP prefixes, no unnamed index columns, and no target or post-delivery columns.
 
-### P. Work pending Member A and downstream
+### P. Target-related geographic EDA
 
-The following target-dependent work is pending Member A's approved target and is not claimed as complete:
+Member B used Member A's approved `data/processed/orders_clean.csv` without recreating or changing its target. Only `order_id` and `is_late_delivery` were read. The target population contains **96,470 unique eligible orders**, with **88,644 on time (91.8876%)** and **7,826 late (8.1124%)**, an **11.3269:1** majority-to-minority ratio.
 
-- validation of Member A's target definition and values;
-- overall target class distribution;
-- class-imbalance interpretation;
-- target-merge row counts and cardinality;
-- geographic features versus `is_late_delivery`;
-- target-related visualizations;
-- target-related conclusions.
+The diagnostic outer comparison found **96,470 shared orders**, zero Member A-only orders, and **2,971 Member B-only orders**. This follows Member A's documented eligibility rules: non-delivered orders and eight delivered rows without a known actual delivery timestamp are not labelled. The temporary inner merge is validated one-to-one and is not saved; `is_late_delivery` remains absent from all Member B processed outputs.
 
-Project-level chronological splitting, encoding, imputation, scaling, resampling, model fitting, and model-based feature selection are separately deferred downstream. Member C retains item/product ownership, and Member D retains final-merge ownership.
+Customer region shows a descriptive contrast: Northeast is **14.3299% late (1,296 / 9,044)**, compared with North 9.7996%, Central-West 7.9659%, Southeast 7.4509%, and South 7.0513%. State-level rates are reported with counts, and small groups are not used for strong conclusions.
+
+Orders with at least one cross-state seller are **9.2817% late**, versus **6.0422%** when at least one seller shares the customer state. The corresponding all-seller comparison is 9.2463% versus 6.0824%. Region-agreement differences are smaller. All agreement indicators are available for the eligible target population.
+
+Late orders have a higher average Haversine-distance mean (**737.4032 km** versus **588.4166 km**) and median (**511.7607 km** versus **426.7138 km**). The average-distance rank-biserial effect is small at **0.1252**. Fixed exploratory bands rise from **6.3029% late below 250 km** to **13.0688% at 1,500+ km**. These documented bands are descriptive rather than universal logistics thresholds, and Haversine distance is not road distance.
+
+Multi-seller and multi-region orders are rare, so their low observed rates are not treated as robust evidence. Missing customer coordinates cover 265 eligible orders, missing seller coordinates 217, and missing average distance 477; their target-rate differences are documented without causal interpretation.
+
+Two-sided Mann-Whitney U tests find small positive distance shifts, with rank-biserial effects from **0.1235 to 0.1271**. Chi-square expected counts are adequate for the reported comparisons, but Cramer's V remains small: **0.0745** for customer region, at most **0.0569** for agreement indicators, and **0.0064** for distance availability. Statistical significance is not used alone to select features.
+
+Geographic features remain provisional. Downstream work must use a chronological split; evaluate precision, recall, F1-score, ROC-AUC, and especially PR-AUC; review correlated geographic fields; and fit resampling, class weighting, imputation, encoding, scaling, and model-based feature selection on training data only. Member C retains item/product ownership, and Member D retains final-merge ownership.
 
 ### Q. Viva questions and concise answers
 
@@ -206,13 +212,45 @@ Repeated order-seller pairs are removed, then sellers are summarized with counts
 
 Only information available after item and seller confirmation but before delivery is used. Post-outcome fields and full-dataset target aggregates are excluded, and learned preprocessing must be fitted on training data only.
 
-#### 10. Why does target work wait for Member A?
+#### 10. Why was Member A's target used instead of recreating it?
 
-Member A owns the approved target. Waiting prevents inconsistent labels, duplicated ownership, and accidental use of delivery outcomes outside the agreed target pipeline.
+Member A owns the approved target and eligibility rules. Reading only `order_id` and `is_late_delivery` preserves one authoritative label and prevents inconsistent filtering or accidental outcome leakage.
 
 #### 11. What did Member B contribute personally?
 
 Member B audited and cleaned customer, seller, and geolocation data; removed exact-duplicate weighting; investigated coordinates and ZIP conflicts; built robust ZIP centroids and regions; enriched customers and sellers; engineered and validated order-level geographic features; and documented feature decisions, leakage controls, validation, and limitations.
+
+#### 12. What class imbalance was observed?
+
+There are 88,644 on-time and 7,826 late eligible orders, or 91.8876% versus 8.1124%. The 11.3269:1 ratio means accuracy alone is insufficient.
+
+#### 13. How were unmatched orders handled?
+
+All Member A target orders match Member B. The 2,971 Member B-only orders remain unlabelled under Member A's documented eligibility rules and are excluded from target-related EDA.
+
+#### 14. What target-related geographic relationships were observed?
+
+Northeast, cross-state, and longer-distance groups have higher observed late rates, but distributions overlap and effect sizes are small. These are associations, not causal conclusions.
+
+#### 15. Why is the target absent from `order_geo_features.csv`?
+
+Keeping the reusable predictor table target-free prevents leakage and preserves Member A's ownership. The target is attached only in the temporary EDA dataset or in downstream modelling data.
+
+#### 16. Why are the findings associative rather than causal?
+
+The data are observational. Geography correlates with routes, seller mix, infrastructure, season, and other factors, so a rate difference does not prove geography caused lateness.
+
+#### 17. Which downstream metrics are appropriate?
+
+Precision, recall, F1-score, ROC-AUC, and especially PR-AUC should supplement accuracy because late deliveries are the minority class.
+
+#### 18. Where may imbalance handling and learned preprocessing occur?
+
+Only after the chronological split and only on training data. Validation and test outcomes must not influence weighting, resampling, imputation, encoding, scaling, or feature selection.
+
+#### 19. Did these comparisons select geographic features?
+
+No. Final selection requires training-only evidence from stability, redundancy, practical effect size, and model performance.
 
 ---
 
