@@ -20,9 +20,11 @@ Thumbs.db
 models/*.pkl
 models/*.joblib
 
-# Large data files
-data/final/*.csv
-data/processed/*.csv
+# Large data files (too big for GitHub — regenerate by running notebooks)
+data/final/*
+!data/final/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
 data/raw/*.csv
 *.parquet
 *.zip
