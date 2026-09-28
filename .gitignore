@@ -15,3 +15,14 @@ env/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Large model files
+models/*.pkl
+models/*.joblib
+
+# Large data files
+data/final/*.csv
+data/processed/*.csv
+data/raw/*.csv
+*.parquet
+*.zip
