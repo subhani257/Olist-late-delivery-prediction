@@ -1,4 +1,4 @@
-Model,Val ROC-AUC,Val PR-AUC,Val F1 (0.5),Val Recall (0.5),Val Prec (0.5)
+Model,Val ROC-AUC,Val PR-AUC,Val F1 (thr=0.5),Val Recall,Val Precision
 MLP Neural Net,0.7766,0.1773,0.0127,0.0065,0.3846
 Logistic Regression,0.7718,0.1606,0.0026,0.0013,0.1667
 LightGBM,0.7408,0.1508,0.1558,0.1138,0.2465
