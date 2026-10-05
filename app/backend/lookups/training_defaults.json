@@ -1,0 +1,38 @@
+{
+  "global_mean_late_rate": 0.09027233,
+  "approval_lag_hours_median": 0.31,
+  "shipping_limit_lead_days_median": 6.0137,
+  "distance_medians": {
+    "minimum_distance_km": 447.1947,
+    "average_distance_km": 448.5132,
+    "maximum_distance_km": 450.0112
+  },
+  "payment_outlier_upper": 346.31,
+  "price_outlier_upper": 305.9,
+  "freight_outlier_upper": 38.1,
+  "high_value_threshold": 175.5,
+  "categories_list": [
+    "auto",
+    "baby",
+    "bed_bath_table",
+    "computers_accessories",
+    "consoles_games",
+    "cool_stuff",
+    "electronics",
+    "fashion_bags_accessories",
+    "furniture_decor",
+    "garden_tools",
+    "health_beauty",
+    "housewares",
+    "office_furniture",
+    "other",
+    "perfumery",
+    "pet_shop",
+    "sports_leisure",
+    "stationery",
+    "telephony",
+    "toys",
+    "unknown_category",
+    "watches_gifts"
+  ]
+}

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olist — Late Delivery Risk Predictor</title>
+  <meta name="description" content="Predict whether an Olist order is at risk of late delivery before it is dispatched." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=20261005_3" />
+</head>
+<body>
+
+  <!-- ── TOP NAVBAR ───────────────────────────────────────────────────────── -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="#/home" class="brand-logo">
+        <span class="logo-box">📦</span>
+        <div class="logo-text">
+          <span class="brand-title">Olist Risk Predictor</span>
+          <span class="brand-sub">Early Warning ML System</span>
+        </div>
+      </a>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <!-- Nav Links & Badge -->
+      <nav class="nav-menu" id="navMenu">
+        <div class="nav-links">
+          <a href="#/home" class="nav-link" id="nav-home">Home</a>
+          <a href="#/predict" class="nav-link" id="nav-predict">Predict</a>
+          <a href="#/about" class="nav-link" id="nav-about">About</a>
+        </div>
+        <div class="header-badge">
+          <span class="badge-dot" id="statusDot"></span>
+          <span id="statusText">Connecting…</span>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggle" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <span id="themeIcon">🌙</span>
+          <span class="theme-text" id="themeText">Dark</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT CONTAINER ───────────────────────────────────────────── -->
+  <main class="main-container">
+
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    <!-- 1. HOME PAGE VIEW                                                     -->
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    <section id="page-home" class="page-view">
+      
+      <!-- Hero Section -->
+      <div class="hero-card">
+        <div class="hero-badge">⚡ Powered by Machine Learning</div>
+        <h1 class="hero-title">Predict late deliveries before they happen</h1>
+        <p class="hero-subtitle">
+          An early-warning machine learning system built on real Brazilian e-commerce data to identify dispatch risks before customer dissatisfaction occurs.
+        </p>
+        <div class="hero-actions">
+          <a href="#/predict" class="btn btn-primary btn-lg">
+            <span>🚀 Start Risk Prediction</span>
+          </a>
+          <a href="#/about" class="btn btn-secondary btn-lg">
+            <span>📖 Explore Model Architecture</span>
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">99,000+</span>
+            <span class="stat-label">Real Orders Evaluated</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">44</span>
+            <span class="stat-label">ML Features Computed</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">0.7766</span>
+            <span class="stat-label">ROC-AUC Performance</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works Section -->
+      <div class="section-container">
+        <div class="section-header-center">
+          <h2 class="section-headline">How It Works</h2>
+          <p class="section-desc">Three simple steps to assess fulfillment risks at checkout or order placement.</p>
+        </div>
+
+        <div class="cards-grid grid-3">
+          <div class="feature-card">
+            <div class="card-icon-wrap">📝</div>
+            <h3 class="card-title">1. Enter Order Details</h3>
+            <p class="card-text">
+              Provide raw order information such as purchase timestamp, zip prefixes, product category, package dimensions, price, and payment method.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="card-icon-wrap">⚡</div>
+            <h3 class="card-title">2. Automated Feature Extraction</h3>
+            <p class="card-text">
+              The backend feature builder automatically converts raw inputs into all 44 model features (distances, lead times, historical aggregates) in real time.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="card-icon-wrap">📊</div>
+            <h3 class="card-title">3. Instant Risk Assessment</h3>
+            <p class="card-text">
+              Get an instant risk classification (Low, Medium, or High) with precise probability scores and actionable operational recommendations.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- About the System (Overview & Real Metrics) -->
+      <div class="section-container">
+        <div class="section-header-center">
+          <h2 class="section-headline">About the System</h2>
+          <p class="section-desc">Trained and validated on real-world Brazilian e-commerce operations data.</p>
+        </div>
+
+        <div class="cards-grid grid-2">
+          <div class="info-card">
+            <h3 class="info-card-title">📦 Dataset &amp; Domain</h3>
+            <p class="info-card-text">
+              Built on the <strong>Brazilian E-Commerce Public Dataset by Olist</strong> containing 99k+ anonymised orders from 2016 to 2018. The dataset integrates 9 relational CSV files detailing customer &amp; seller geolocation, product physical characteristics, order timestamps, and payment structures.
+            </p>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card-title">🛡️ Strict Leakage Prevention</h3>
+            <p class="info-card-text">
+              To guarantee real-world usability at order placement, all post-dispatch features (carrier pickup dates, actual delivery timestamps, and customer review scores) are strictly excluded from prediction inputs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Real Model Comparison Table -->
+        <div class="metrics-table-card">
+          <div class="table-header">
+            <h3 class="table-title">Model Evaluation Benchmark (Validation Dataset)</h3>
+            <span class="table-badge">Validated Results</span>
+          </div>
+          <div class="table-responsive">
+            <table class="metrics-table">
+              <thead>
+                <tr>
+                  <th>Model Architecture</th>
+                  <th>Val ROC-AUC</th>
+                  <th>Val PR-AUC</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="highlight-row">
+                  <td><strong>MLP Neural Net</strong></td>
+                  <td><span class="metric-val">0.7766</span></td>
+                  <td>0.1773</td>
+                  <td><span class="badge badge-champion">Champion Model</span></td>
+                </tr>
+                <tr>
+                  <td>Logistic Regression</td>
+                  <td><span class="metric-val">0.7718</span></td>
+                  <td>0.1606</td>
+                  <td>Baseline</td>
+                </tr>
+                <tr>
+                  <td>LightGBM Classifier</td>
+                  <td><span class="metric-val">0.7408</span></td>
+                  <td>0.1508</td>
+                  <td>Evaluated</td>
+                </tr>
+                <tr>
+                  <td>Random Forest</td>
+                  <td><span class="metric-val">0.7389</span></td>
+                  <td>0.1505</td>
+                  <td>Evaluated</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    <!-- 2. PREDICT PAGE VIEW                                                  -->
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    <section id="page-predict" class="page-view hidden">
+      
+      <div class="page-header">
+        <h1 class="page-title">Order Late-Delivery Risk Calculator</h1>
+        <p class="page-subtitle">Fill in the raw order parameters below. All 44 model features will be engineered server-side.</p>
+      </div>
+
+      <div class="predict-layout">
+
+        <!-- LEFT COLUMN: Form -->
+        <div class="form-column">
+          <form id="predictionForm" class="prediction-form" novalidate>
+
+            <!-- Collapsible Section 1: Schedule -->
+            <details open class="collapsible-section">
+              <summary class="collapsible-header">
+                <div class="header-left">
+                  <span class="section-icon">📅</span>
+                  <span class="section-title-text">Schedule &amp; Timestamps</span>
+                </div>
+                <span class="chevron-icon">▼</span>
+              </summary>
+              <div class="section-body">
+                <div class="grid grid-2">
+                  <div class="field-group">
+                    <label for="purchase_datetime" class="field-label">
+                      Purchase Date &amp; Time <span class="req">*</span>
+                    </label>
+                    <input type="datetime-local" id="purchase_datetime" name="purchase_datetime" class="form-input" required />
+                    <span class="field-hint">When customer completed checkout</span>
+                    <span class="error-inline" id="err_purchase_datetime"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="estimated_delivery_date" class="field-label">
+                      Estimated Delivery Date <span class="req">*</span>
+                    </label>
+                    <input type="date" id="estimated_delivery_date" name="estimated_delivery_date" class="form-input" required />
+                    <span class="field-hint">Promised delivery deadline</span>
+                    <span class="error-inline" id="err_estimated_delivery_date"></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Collapsible Section 2: Location -->
+            <details open class="collapsible-section">
+              <summary class="collapsible-header">
+                <div class="header-left">
+                  <span class="section-icon">🗺️</span>
+                  <span class="section-title-text">Location &amp; Geolocation ZIPs</span>
+                </div>
+                <span class="chevron-icon">▼</span>
+              </summary>
+              <div class="section-body">
+                <div class="grid grid-2">
+                  <div class="field-group">
+                    <label for="customer_zip_prefix" class="field-label">
+                      Customer ZIP Code Prefix (1-5 digits) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="customer_zip_prefix" name="customer_zip_prefix" min="1" max="99999" placeholder="e.g. 1001" class="form-input" required />
+                    <span class="field-hint">Customer region &amp; coordinates</span>
+                    <span class="error-inline" id="err_customer_zip_prefix"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="seller_zip_prefix" class="field-label">
+                      Seller ZIP Code Prefix (1-5 digits) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="seller_zip_prefix" name="seller_zip_prefix" min="1" max="99999" placeholder="e.g. 4101" class="form-input" required />
+                    <span class="field-hint">Seller dispatch origin</span>
+                    <span class="error-inline" id="err_seller_zip_prefix"></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Collapsible Section 3: Product Details -->
+            <details open class="collapsible-section">
+              <summary class="collapsible-header">
+                <div class="header-left">
+                  <span class="section-icon">🛍️</span>
+                  <span class="section-title-text">Product &amp; Package Specifications</span>
+                </div>
+                <span class="chevron-icon">▼</span>
+              </summary>
+              <div class="section-body">
+                <div class="grid grid-3">
+                  <div class="field-group span-3">
+                    <label for="product_category" class="field-label">
+                      Product Category <span class="req">*</span>
+                    </label>
+                    <select id="product_category" name="product_category" class="form-select" required>
+                      <option value="">Select Category…</option>
+                      <option value="bed_bath_table">Bed, Bath &amp; Table (bed_bath_table)</option>
+                      <option value="health_beauty">Health &amp; Beauty (health_beauty)</option>
+                      <option value="sports_leisure">Sports &amp; Leisure (sports_leisure)</option>
+                      <option value="furniture_decor">Furniture &amp; Decor (furniture_decor)</option>
+                      <option value="computers_accessories">Computers &amp; Accessories</option>
+                      <option value="housewares">Housewares (housewares)</option>
+                      <option value="watches_gifts">Watches &amp; Gifts (watches_gifts)</option>
+                      <option value="telephony">Telephony &amp; Phones</option>
+                      <option value="auto">Auto &amp; Automotive</option>
+                      <option value="toys">Toys &amp; Games</option>
+                      <option value="cool_stuff">Cool Stuff</option>
+                      <option value="garden_tools">Garden Tools</option>
+                      <option value="perfumery">Perfumery &amp; Fragrances</option>
+                      <option value="baby">Baby Products</option>
+                      <option value="stationery">Stationery &amp; Office</option>
+                      <option value="electronics">Electronics</option>
+                      <option value="pet_shop">Pet Shop</option>
+                      <option value="office_furniture">Office Furniture</option>
+                      <option value="consoles_games">Consoles &amp; Games</option>
+                      <option value="fashion_bags_accessories">Fashion &amp; Accessories</option>
+                      <option value="other">Other / General Category</option>
+                    </select>
+                    <span class="error-inline" id="err_product_category"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="price" class="field-label">
+                      Unit Price (R$) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="price" name="price" step="0.01" min="0.01" placeholder="120.00" class="form-input" required />
+                    <span class="error-inline" id="err_price"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="freight_value" class="field-label">
+                      Freight Cost (R$) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="freight_value" name="freight_value" step="0.01" min="0" placeholder="25.00" class="form-input" required />
+                    <span class="error-inline" id="err_freight_value"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="weight_g" class="field-label">
+                      Weight (g) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="weight_g" name="weight_g" step="1" min="1" placeholder="1500" class="form-input" required />
+                    <span class="error-inline" id="err_weight_g"></span>
+                  </div>
+                </div>
+
+                <div class="grid grid-3">
+                  <div class="field-group">
+                    <label for="length_cm" class="field-label">
+                      Length (cm) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="length_cm" name="length_cm" step="0.1" min="0.1" placeholder="30" class="form-input" required />
+                    <span class="error-inline" id="err_length_cm"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="height_cm" class="field-label">
+                      Height (cm) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="height_cm" name="height_cm" step="0.1" min="0.1" placeholder="15" class="form-input" required />
+                    <span class="error-inline" id="err_height_cm"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="width_cm" class="field-label">
+                      Width (cm) <span class="req">*</span>
+                    </label>
+                    <input type="number" id="width_cm" name="width_cm" step="0.1" min="0.1" placeholder="20" class="form-input" required />
+                    <span class="error-inline" id="err_width_cm"></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Collapsible Section 4: Payment -->
+            <details open class="collapsible-section">
+              <summary class="collapsible-header">
+                <div class="header-left">
+                  <span class="section-icon">💳</span>
+                  <span class="section-title-text">Payment Details</span>
+                </div>
+                <span class="chevron-icon">▼</span>
+              </summary>
+              <div class="section-body">
+                <div class="grid grid-2">
+                  <div class="field-group">
+                    <label for="payment_type" class="field-label">
+                      Payment Method <span class="req">*</span>
+                    </label>
+                    <select id="payment_type" name="payment_type" class="form-select" required>
+                      <option value="credit_card">Credit Card</option>
+                      <option value="boleto">Boleto (Bank Slip)</option>
+                      <option value="debit_card">Debit Card</option>
+                      <option value="voucher">Voucher / Gift Card</option>
+                    </select>
+                    <span class="error-inline" id="err_payment_type"></span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="installments" class="field-label">
+                      Installments <span class="req">*</span>
+                    </label>
+                    <input type="number" id="installments" name="installments" min="0" max="24" value="1" class="form-input" required />
+                    <span class="field-hint">0 for Boleto or Debit Card</span>
+                    <span class="error-inline" id="err_installments"></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Collapsible Section 5: Advanced (Collapsed by Default) -->
+            <details class="collapsible-section">
+              <summary class="collapsible-header">
+                <div class="header-left">
+                  <span class="section-icon">⚙️</span>
+                  <span class="section-title-text">Advanced / Multi-Item Options (Optional)</span>
+                </div>
+                <span class="chevron-icon">▼</span>
+              </summary>
+              <div class="section-body">
+                <div class="grid grid-3">
+                  <div class="field-group">
+                    <label for="item_count" class="field-label">Item Quantity</label>
+                    <input type="number" id="item_count" name="item_count" min="1" value="1" class="form-input" />
+                    <span class="field-hint">Total items (default 1)</span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="seller_count" class="field-label">Seller Count</label>
+                    <input type="number" id="seller_count" name="seller_count" min="1" value="1" class="form-input" />
+                    <span class="field-hint">Distinct sellers (default 1)</span>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="approval_lag_hours" class="field-label">Approval Lag (hrs)</label>
+                    <input type="number" id="approval_lag_hours" name="approval_lag_hours" step="0.01" min="0" placeholder="Auto (0.31h)" class="form-input" />
+                    <span class="field-hint">Leave blank for median</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Form Action Buttons -->
+            <div class="form-actions">
+              <button type="button" id="fillDemoBtn" class="btn btn-secondary">
+                ⚡ Load Sample Order
+              </button>
+              <button type="button" id="resetBtn" class="btn btn-outline">
+                🔄 Reset
+              </button>
+              <button type="submit" id="predictBtn" class="btn btn-primary btn-submit">
+                <span id="btnText">Predict Delivery Risk</span>
+                <span id="btnSpinner" class="spinner hidden"></span>
+              </button>
+            </div>
+
+            <div class="error-banner hidden" id="errorMsg"></div>
+
+          </form>
+        </div>
+
+        <!-- RIGHT COLUMN: Sticky Result Panel -->
+        <div class="result-column">
+          <div class="result-sticky-wrapper">
+
+            <!-- Empty State (Shown before prediction) -->
+            <div class="result-empty-state" id="resultEmptyState">
+              <div class="empty-icon-wrap">📦</div>
+              <h3 class="empty-title">Awaiting Prediction</h3>
+              <p class="empty-desc">
+                Fill in the order parameters on the left and click <strong>Predict Delivery Risk</strong> to evaluate fulfillment safety.
+              </p>
+            </div>
+
+            <!-- Result Card (Shown after prediction) -->
+            <div class="result-card hidden" id="resultCard">
+              <div class="result-top-bar">
+                <span class="result-tag">Risk Assessment Result</span>
+                <span class="result-class-badge" id="predictedClassBadge">Class: --</span>
+              </div>
+
+              <div class="result-header">
+                <span class="risk-badge-icon" id="riskIcon">🟡</span>
+                <div class="risk-title-wrap">
+                  <span class="risk-caption">Late Delivery Risk</span>
+                  <h2 class="risk-level-title" id="riskLevel">Medium</h2>
+                </div>
+              </div>
+
+              <!-- Animated Radial/Progress Gauge -->
+              <div class="gauge-container">
+                <div class="gauge-header">
+                  <span class="gauge-label">Probability of Late Arrival</span>
+                  <span class="gauge-value" id="probValue">0.0%</span>
+                </div>
+                <div class="gauge-track">
+                  <div class="gauge-bar-fill" id="probBarFill"></div>
+                </div>
+              </div>
+
+              <!-- Recommendation Box -->
+              <div class="recommendation-box" id="resultExplanation">
+                <!-- Dynamic text populated by JS -->
+              </div>
+
+              <!-- Collapsible Decision Specs -->
+              <details class="specs-details">
+                <summary class="specs-summary">
+                  🔍 View Technical Model Decision Specs
+                </summary>
+                <div class="specs-content">
+                  <div class="spec-row">
+                    <span>Decision Threshold:</span>
+                    <strong id="specDecisionThreshold">10.0%</strong>
+                  </div>
+                  <div class="spec-row">
+                    <span>Low Risk Band:</span>
+                    <strong id="specLowThreshold">&lt; 30.0%</strong>
+                  </div>
+                  <div class="spec-row">
+                    <span>High Risk Band:</span>
+                    <strong id="specHighThreshold">&gt; 55.0%</strong>
+                  </div>
+                  <div class="spec-row">
+                    <span>Features Computed:</span>
+                    <strong id="specFeaturesComputed">44 / 67</strong>
+                  </div>
+                </div>
+              </details>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    <!-- 3. ABOUT PAGE VIEW                                                    -->
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    <section id="page-about" class="page-view hidden">
+      
+      <div class="page-header">
+        <h1 class="page-title">About the Olist Risk Predictor</h1>
+        <p class="page-subtitle">End-to-end data mining architecture, feature engineering, and model evaluation pipeline.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="card-icon-wrap">🎯</div>
+          <h3>Problem Statement</h3>
+          <p>
+            Olist connects small Brazilian merchants to major e-commerce platforms. A significant percentage of shipments suffer from carrier delays. This early-warning classifier estimates late delivery probability at order placement so support &amp; logistics teams can take proactive measures.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <div class="card-icon-wrap">📊</div>
+          <h3>Dataset &amp; Preprocessing</h3>
+          <p>
+            Utilizes ~99,000 real anonymized orders (2016–2018) from Kaggle. Cleaned relational schemas cover customer &amp; seller ZIP geolocations, Haversine distance calculations, package volumetric metrics, and payment installment features.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <div class="card-icon-wrap">🚫</div>
+          <h3>Strict Leakage Prevention</h3>
+          <p>
+            Features recorded post-checkout (such as carrier dispatch timestamp, delivery receipt timestamp, or customer review scores) are excluded to prevent target leakage and ensure true operational utility before dispatch.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <div class="card-icon-wrap">⚙️</div>
+          <h3>ML Model Pipeline</h3>
+          <p>
+            Evaluated Logistic Regression, Random Forest, LightGBM, and MLP Neural Networks. The champion MLP Neural Net delivers optimal ranking ability with a <strong>0.7766 ROC-AUC</strong> score across 44 standardized input variables.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <strong>Olist Late Delivery Risk Predictor</strong> — Early Warning System
+      </div>
+      <div class="footer-right">
+        IT3051 — Fundamentals of Data Mining · SLIIT 2026 · Academic Demonstration Only
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js?v=20261005_3"></script>
+</body>
+</html>
