@@ -1,434 +1,356 @@
-// ── Config ────────────────────────────────────────────────────────────────────
-let API_BASE = "http://127.0.0.1:8002";
+// Olist Risk Predictor - Frontend JavaScript Application
 
-// ── DOM References ────────────────────────────────────────────────────────────
-const navToggle         = document.getElementById("navToggle");
-const navMenu           = document.getElementById("navMenu");
+const API_BASE_URL = 'http://127.0.0.1:8002';
 
-const form              = document.getElementById("predictionForm");
-const predictBtn        = document.getElementById("predictBtn");
-const btnText           = document.getElementById("btnText");
-const btnSpinner        = document.getElementById("btnSpinner");
-const fillDemoBtn       = document.getElementById("fillDemoBtn");
-const resetBtn          = document.getElementById("resetBtn");
-
-const resultEmptyState  = document.getElementById("resultEmptyState");
-const resultCard        = document.getElementById("resultCard");
-const riskLevel         = document.getElementById("riskLevel");
-const riskIcon          = document.getElementById("riskIcon");
-const probBarFill       = document.getElementById("probBarFill");
-const probValue         = document.getElementById("probValue");
-const resultExpl        = document.getElementById("resultExplanation");
-const predictedClassBadge = document.getElementById("predictedClassBadge");
-
-const specDecisionThreshold = document.getElementById("specDecisionThreshold");
-const specLowThreshold     = document.getElementById("specLowThreshold");
-const specHighThreshold    = document.getElementById("specHighThreshold");
-const specFeaturesComputed = document.getElementById("specFeaturesComputed");
-
-const errorMsg          = document.getElementById("errorMsg");
-const statusDot         = document.getElementById("statusDot");
-const statusText        = document.getElementById("statusText");
-
-// ── Theme Switcher (Dark / Light Mode) ────────────────────────────────────────
-const themeToggle = document.getElementById("themeToggle");
-const themeIcon   = document.getElementById("themeIcon");
-const themeText   = document.getElementById("themeText");
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("theme", theme);
-  if (themeIcon) {
-    themeIcon.textContent = theme === "light" ? "☀️" : "🌙";
-  }
-  if (themeText) {
-    themeText.textContent = theme === "light" ? "Light" : "Dark";
-  }
-}
-
-function initTheme() {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme) {
-    applyTheme(savedTheme);
+// 1. Theme Toggle Management
+function toggleTheme() {
+  const htmlEl = document.documentElement;
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  
+  if (htmlEl.classList.contains('dark')) {
+    htmlEl.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+    if (toggleBtn) {
+      toggleBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      `;
+    }
   } else {
-    applyTheme("dark");
+    htmlEl.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+    if (toggleBtn) {
+      toggleBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2"></path>
+          <path d="M12 20v2"></path>
+          <path d="m4.93 4.93 1.41 1.41"></path>
+          <path d="m17.66 17.66 1.41 1.41"></path>
+          <path d="M2 12h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="m6.34 17.66-1.41 1.41"></path>
+          <path d="m19.07 4.93-1.41 1.41"></path>
+        </svg>
+      `;
+    }
   }
 }
 
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    applyTheme(newTheme);
-  });
-}
-
-initTheme();
-
-// ── Client-side Hash Router ───────────────────────────────────────────────────
-function handleRoute() {
-  const hash = window.location.hash || "#/home";
-  const validRoutes = ["#/home", "#/predict", "#/about"];
-  const activeRoute = validRoutes.includes(hash) ? hash : "#/home";
-
-  // Hide all page views
-  document.querySelectorAll(".page-view").forEach(page => page.classList.add("hidden"));
-
-  // Show target page view
-  const targetId = activeRoute.replace("#/", "page-");
-  const targetPage = document.getElementById(targetId);
-  if (targetPage) {
-    targetPage.classList.remove("hidden");
-  }
-
-  // Update active navbar links
-  document.querySelectorAll(".nav-link").forEach(link => {
-    link.classList.toggle("active", link.getAttribute("href") === activeRoute);
-  });
-
-  // Close mobile drawer on navigation
-  if (navMenu) navMenu.classList.remove("open");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-window.addEventListener("hashchange", handleRoute);
-window.addEventListener("DOMContentLoaded", handleRoute);
-
-// Mobile Hamburger Toggle
-if (navToggle && navMenu) {
-  navToggle.addEventListener("click", () => {
-    navMenu.classList.toggle("open");
-  });
-}
-
-// ── Backend Health Check ──────────────────────────────────────────────────────
+// 2. Health Check Polling
 async function checkHealth() {
-  const ports = ["8002", "8001", "8000"];
-  for (const port of ports) {
-    try {
-      const url = `http://127.0.0.1:${port}/health`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(2000) });
-      if (res.ok) {
-        API_BASE = `http://127.0.0.1:${port}`;
-        statusDot.className = "badge-dot online";
-        statusText.textContent = `API Online (${port})`;
-        return;
-      }
-    } catch {
-      // check next port
-    }
-  }
-  statusDot.className = "badge-dot offline";
-  statusText.textContent = "API Offline";
-}
-checkHealth();
-setInterval(checkHealth, 10000);
-
-// ── Form Validation Helper ────────────────────────────────────────────────────
-function clearInlineErrors() {
-  document.querySelectorAll(".error-inline").forEach(el => {
-    el.textContent = "";
-    el.classList.remove("active");
-  });
-  document.querySelectorAll(".form-input, .form-select").forEach(input => {
-    input.classList.remove("invalid");
-  });
-}
-
-function showInlineError(fieldId, message) {
-  const inputEl = document.getElementById(fieldId);
-  const errEl = document.getElementById(`err_${fieldId}`);
-  if (inputEl) inputEl.classList.add("invalid");
-  if (errEl) {
-    errEl.textContent = message;
-    errEl.classList.add("active");
-  }
-}
-
-function validateForm() {
-  clearInlineErrors();
-  let isValid = true;
-
-  const rawPurchase = document.getElementById("purchase_datetime")?.value;
-  const rawEst = document.getElementById("estimated_delivery_date")?.value;
-
-  if (!rawPurchase) {
-    showInlineError("purchase_datetime", "Purchase date and time is required");
-    isValid = false;
-  }
-
-  if (!rawEst) {
-    showInlineError("estimated_delivery_date", "Estimated delivery date is required");
-    isValid = false;
-  }
-
-  // Date comparison: Estimated delivery date must be AFTER purchase date
-  if (rawPurchase && rawEst) {
-    const purchaseDate = new Date(rawPurchase);
-    const estDate = new Date(`${rawEst}T23:59:59`);
-    if (estDate <= purchaseDate) {
-      showInlineError("estimated_delivery_date", "Estimated delivery date must be after purchase date");
-      isValid = false;
-    }
-  }
-
-  const custZip = parseInt(document.getElementById("customer_zip_prefix")?.value, 10);
-  if (isNaN(custZip) || custZip < 1 || custZip > 99999) {
-    showInlineError("customer_zip_prefix", "Valid 1 to 5 digit ZIP code required");
-    isValid = false;
-  }
-
-  const sellerZip = parseInt(document.getElementById("seller_zip_prefix")?.value, 10);
-  if (isNaN(sellerZip) || sellerZip < 1 || sellerZip > 99999) {
-    showInlineError("seller_zip_prefix", "Valid 1 to 5 digit ZIP code required");
-    isValid = false;
-  }
-
-  const category = document.getElementById("product_category")?.value;
-  if (!category) {
-    showInlineError("product_category", "Please select a product category");
-    isValid = false;
-  }
-
-  const price = parseFloat(document.getElementById("price")?.value);
-  if (isNaN(price) || price <= 0) {
-    showInlineError("price", "Price must be greater than 0");
-    isValid = false;
-  }
-
-  const freight = parseFloat(document.getElementById("freight_value")?.value);
-  if (isNaN(freight) || freight < 0) {
-    showInlineError("freight_value", "Freight value must be 0 or greater");
-    isValid = false;
-  }
-
-  const weight = parseFloat(document.getElementById("weight_g")?.value);
-  if (isNaN(weight) || weight <= 0) {
-    showInlineError("weight_g", "Weight must be greater than 0");
-    isValid = false;
-  }
-
-  ["length_cm", "height_cm", "width_cm"].forEach(dim => {
-    const val = parseFloat(document.getElementById(dim)?.value);
-    if (isNaN(val) || val <= 0) {
-      showInlineError(dim, "Dimension must be greater than 0");
-      isValid = false;
-    }
-  });
-
-  return isValid;
-}
-
-// ── Read Raw Form Values into API Payload ────────────────────────────────────
-function readFormPayload() {
-  const rawPurchase = document.getElementById("purchase_datetime").value.trim();
-  let purchase_datetime = rawPurchase.replace("T", " ");
-  if (purchase_datetime.length === 16) {
-    purchase_datetime += ":00";
-  }
-
-  const rawEst = document.getElementById("estimated_delivery_date").value.trim();
-
-  const getInt = (id, def = 0) => {
-    const val = parseInt(document.getElementById(id)?.value, 10);
-    return isNaN(val) ? def : val;
-  };
-  const getFloat = (id, def = 0.0) => {
-    const val = parseFloat(document.getElementById(id)?.value);
-    return isNaN(val) ? def : val;
-  };
-
-  const payload = {
-    purchase_datetime: purchase_datetime,
-    estimated_delivery_date: rawEst,
-    customer_zip_prefix: getInt("customer_zip_prefix", 1001),
-    seller_zip_prefix: getInt("seller_zip_prefix", 4101),
-    product_category: document.getElementById("product_category").value || "bed_bath_table",
-    price: getFloat("price", 100.0),
-    freight_value: getFloat("freight_value", 20.0),
-    weight_g: getFloat("weight_g", 1000.0),
-    length_cm: getFloat("length_cm", 20.0),
-    height_cm: getFloat("height_cm", 10.0),
-    width_cm: getFloat("width_cm", 15.0),
-    payment_type: document.getElementById("payment_type").value || "credit_card",
-    installments: getInt("installments", 1),
-  };
-
-  const item_val = document.getElementById("item_count")?.value.trim();
-  if (item_val) payload.item_count = parseInt(item_val, 10);
-
-  const seller_val = document.getElementById("seller_count")?.value.trim();
-  if (seller_val) payload.seller_count = parseInt(seller_val, 10);
-
-  const lag_val = document.getElementById("approval_lag_hours")?.value.trim();
-  if (lag_val) payload.approval_lag_hours = parseFloat(lag_val);
-
-  return payload;
-}
-
-// ── Risk Recommendations Config ───────────────────────────────────────────────
-const RISK_CONFIG = {
-  Low: {
-    icon: "🟢",
-    cls: "low",
-    explanation: "This order exhibits a <strong>low probability</strong> of delay. Standard processing schedule applies — no intervention required.",
-  },
-  Medium: {
-    icon: "🟡",
-    cls: "med",
-    explanation: "This order has a <strong>moderate risk</strong> of late delivery. Consider monitoring dispatch status and verifying seller shipping lead times.",
-  },
-  High: {
-    icon: "🔴",
-    cls: "high",
-    explanation: "This order has a <strong>high probability</strong> of arriving late. Immediate operational intervention is recommended — contact the seller or escalate priority.",
-  },
-};
-
-// ── Display Prediction Result ─────────────────────────────────────────────────
-function displayResult(data) {
-  const cfg = RISK_CONFIG[data.risk_label] || RISK_CONFIG["Medium"];
-  const pct = (data.probability * 100).toFixed(1);
-
-  // Hide empty state, show result card
-  resultEmptyState.classList.add("hidden");
-  resultCard.classList.remove("hidden");
-
-  // Update card risk class
-  resultCard.className = `result-card ${cfg.cls}`;
-  riskIcon.textContent = cfg.icon;
-  riskLevel.textContent = data.risk_label;
-  predictedClassBadge.textContent = data.predicted_class === 1 ? "Class: Late (1)" : "Class: On-Time (0)";
-
-  // Update probability bar
-  probValue.textContent = `${pct}%`;
-  probBarFill.style.width = `${pct}%`;
-
-  // Update recommendation text
-  resultExpl.innerHTML = cfg.explanation;
-
-  // Update specs details
-  if (data.thresholds_used) {
-    specDecisionThreshold.textContent = `${(data.thresholds_used.decision_threshold * 100).toFixed(1)}%`;
-    specLowThreshold.textContent = `< ${(data.thresholds_used.low_threshold * 100).toFixed(0)}.0%`;
-    specHighThreshold.textContent = `> ${(data.thresholds_used.high_threshold * 100).toFixed(0)}.0%`;
-  }
-  specFeaturesComputed.textContent = `${data.features_computed || 44} engineered`;
-
-  // Smooth scroll to top of the page so the prediction result is immediately visible
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-// ── Error Messaging ───────────────────────────────────────────────────────────
-function showError(msg) {
-  errorMsg.textContent = msg;
-  errorMsg.classList.remove("hidden");
-}
-
-function hideError() {
-  errorMsg.classList.add("hidden");
-  errorMsg.textContent = "";
-}
-
-function setLoading(loading) {
-  predictBtn.disabled = loading;
-  btnText.textContent = loading ? "Computing ML Features…" : "Predict Delivery Risk";
-  btnSpinner.classList.toggle("hidden", !loading);
-}
-
-function parseErrorMessage(errData) {
-  if (!errData) return "Unknown error occurred";
-  if (typeof errData === "string") return errData;
-  if (errData.detail) {
-    if (typeof errData.detail === "string") return errData.detail;
-    if (Array.isArray(errData.detail)) {
-      return errData.detail
-        .map(item => `${item.loc ? item.loc.slice(1).join(".") : "field"}: ${item.msg}`)
-        .join(" | ");
-    }
-    return JSON.stringify(errData.detail);
-  }
-  return JSON.stringify(errData);
-}
-
-// ── Form Submit Listener ──────────────────────────────────────────────────────
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  hideError();
-
-  if (!validateForm()) {
-    return;
-  }
-
-  setLoading(true);
+  const statusPill = document.getElementById('api-status-pill');
+  const statusText = document.getElementById('api-status-text');
+  const offlineBanner = document.getElementById('offline-banner');
 
   try {
-    const payload = readFormPayload();
+    const res = await fetch(`${API_BASE_URL}/health`, { method: 'GET' });
+    if (res.ok) {
+      if (statusPill) {
+        statusPill.className = 'status-pill online';
+      }
+      if (statusText) statusText.innerText = 'API Online: 8002';
+      if (offlineBanner) offlineBanner.style.display = 'none';
+    } else {
+      throw new Error('API degraded');
+    }
+  } catch (err) {
+    if (statusPill) {
+      statusPill.className = 'status-pill offline';
+    }
+    if (statusText) statusText.innerText = 'API Offline';
+    if (offlineBanner) offlineBanner.style.display = 'flex';
+  }
+}
 
-    const res = await fetch(`${API_BASE}/predict`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+// 3. Navigation & Separate View Routing
+function navigateTo(sectionId) {
+  const landingView = document.getElementById('view-landing');
+  const predictView = document.getElementById('view-predict');
+
+  // Update active nav button
+  document.querySelectorAll('.nav-btn').forEach((btn) => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`nav-${sectionId}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  if (sectionId === 'predict') {
+    // Show dedicated Predict Risk view
+    if (landingView) landingView.style.display = 'none';
+    if (predictView) predictView.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    // Show Landing view & scroll to target section
+    if (predictView) predictView.style.display = 'none';
+    if (landingView) landingView.style.display = 'block';
+
+    setTimeout(() => {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 50);
+  }
+
+  setupScrollReveal();
+}
+
+// 4. Hero Simulator Slider
+function updateHeroSim(distanceKm) {
+  const distText = document.getElementById('hero-distance-text');
+  const sliderVal = document.getElementById('slider-dist-val');
+  const riskPct = document.getElementById('hero-risk-pct');
+  const riskLabel = document.getElementById('hero-risk-label');
+  const circle = document.getElementById('hero-gauge-circle');
+
+  const dist = Number(distanceKm);
+  if (distText) distText.innerText = `${dist.toLocaleString()} km`;
+  if (sliderVal) sliderVal.innerText = `${dist.toLocaleString()} km`;
+
+  // Calculate dynamic risk %
+  const risk = Math.min(96, Math.max(12, Math.round((dist / 2800) * 85 + 10)));
+  if (riskPct) riskPct.innerText = `${risk}%`;
+
+  // Update SVG Arc Gauge Dashoffset (circumference 251.2)
+  if (circle) {
+    const offset = 251.2 * (1 - risk / 100);
+    circle.style.strokeDashoffset = offset;
+
+    if (risk > 55) {
+      circle.style.stroke = 'var(--risk-high)';
+      if (riskLabel) {
+        riskLabel.innerText = 'HIGH RISK';
+        riskLabel.style.color = 'var(--risk-high)';
+        riskLabel.style.background = 'var(--risk-high-bg)';
+      }
+    } else if (risk > 30) {
+      circle.style.stroke = 'var(--risk-med)';
+      if (riskLabel) {
+        riskLabel.innerText = 'MEDIUM RISK';
+        riskLabel.style.color = 'var(--risk-med)';
+        riskLabel.style.background = 'var(--risk-med-bg)';
+      }
+    } else {
+      circle.style.stroke = 'var(--risk-low)';
+      if (riskLabel) {
+        riskLabel.innerText = 'LOW RISK';
+        riskLabel.style.color = 'var(--risk-low)';
+        riskLabel.style.background = 'var(--risk-low-bg)';
+      }
+    }
+  }
+}
+
+// 5. Bento Category Filter
+function filterBento(category, btnEl) {
+  document.querySelectorAll('.chip-btn').forEach((b) => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+
+  const cards = document.querySelectorAll('#bento-container .saas-card');
+  cards.forEach((card) => {
+    const cardCat = card.getAttribute('data-category');
+    if (category === 'All' || cardCat === category) {
+      card.style.display = 'flex';
+      card.style.opacity = '1';
+    } else {
+      card.style.display = 'none';
+      card.style.opacity = '0';
+    }
+  });
+}
+
+// 6. Presets Fill Function
+function fillPreset(type) {
+  if (type === 'high') {
+    document.getElementById('purchase_datetime').value = '2018-05-10 10:00:00';
+    document.getElementById('estimated_delivery_date').value = '2018-05-18 00:00:00';
+    document.getElementById('seller_zip_prefix').value = '1000';
+    document.getElementById('customer_zip_prefix').value = '69000'; // Manaus AM
+    document.getElementById('weight_g').value = '12500';
+    document.getElementById('length_cm').value = '90';
+    document.getElementById('height_cm').value = '45';
+    document.getElementById('width_cm').value = '60';
+    document.getElementById('product_category').value = 'moveis_decoracao';
+    document.getElementById('price').value = '320.00';
+    document.getElementById('freight_value').value = '85.00';
+    document.getElementById('payment_type').value = 'boleto';
+    document.getElementById('installments').value = '1';
+    document.getElementById('approval_lag_hours').value = '28.0';
+    document.getElementById('item_count').value = '2';
+  } else {
+    document.getElementById('purchase_datetime').value = '2018-05-15 14:30:00';
+    document.getElementById('estimated_delivery_date').value = '2018-05-28 00:00:00';
+    document.getElementById('seller_zip_prefix').value = '1000';
+    document.getElementById('customer_zip_prefix').value = '20000'; // Rio de Janeiro
+    document.getElementById('weight_g').value = '1500';
+    document.getElementById('length_cm').value = '32';
+    document.getElementById('height_cm').value = '18';
+    document.getElementById('width_cm').value = '22';
+    document.getElementById('product_category').value = 'cama_mesa_banho';
+    document.getElementById('price').value = '149.90';
+    document.getElementById('freight_value').value = '24.50';
+    document.getElementById('payment_type').value = 'credit_card';
+    document.getElementById('installments').value = '3';
+    document.getElementById('approval_lag_hours').value = '2.5';
+    document.getElementById('item_count').value = '1';
+  }
+}
+
+// 7. Form Submission Handler
+async function handlePredictSubmit(event) {
+  event.preventDefault();
+  const submitBtn = document.getElementById('btn-submit-predict');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>Executing Inference...</span>`;
+  }
+
+  const payload = {
+    purchase_datetime: document.getElementById('purchase_datetime').value,
+    estimated_delivery_date: document.getElementById('estimated_delivery_date').value,
+    seller_zip_prefix: Number(document.getElementById('seller_zip_prefix').value),
+    customer_zip_prefix: Number(document.getElementById('customer_zip_prefix').value),
+    weight_g: Number(document.getElementById('weight_g').value),
+    length_cm: Number(document.getElementById('length_cm').value),
+    height_cm: Number(document.getElementById('height_cm').value),
+    width_cm: Number(document.getElementById('width_cm').value),
+    product_category: document.getElementById('product_category').value,
+    price: Number(document.getElementById('price').value),
+    freight_value: Number(document.getElementById('freight_value').value),
+    payment_type: document.getElementById('payment_type').value,
+    installments: Number(document.getElementById('installments').value),
+    approval_lag_hours: Number(document.getElementById('approval_lag_hours').value),
+    item_count: Number(document.getElementById('item_count').value),
+    seller_count: Number(document.getElementById('seller_count').value),
+  };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
-      const errJson = await res.json().catch(() => ({ detail: `HTTP ${res.status} error` }));
-      throw new Error(parseErrorMessage(errJson));
+      throw new Error(`HTTP ${res.status}: Prediction failed`);
     }
 
     const data = await res.json();
-    displayResult(data);
-
+    renderPredictionResult(data);
   } catch (err) {
-    showError(`❌ Prediction failed: ${err.message}`);
+    alert(`Prediction Error: ${err.message}. Ensure backend is running at http://127.0.0.1:8002`);
   } finally {
-    setLoading(false);
-  }
-});
-
-// ── Load Sample Order Demo Values ─────────────────────────────────────────────
-const DEMO_ORDER = {
-  purchase_datetime: "2018-07-15T14:30",
-  estimated_delivery_date: "2018-08-10",
-  customer_zip_prefix: 1001,
-  seller_zip_prefix: 4101,
-  product_category: "bed_bath_table",
-  price: 120.0,
-  freight_value: 25.0,
-  weight_g: 1500,
-  length_cm: 30,
-  height_cm: 15,
-  width_cm: 20,
-  payment_type: "credit_card",
-  installments: 3,
-  item_count: 1,
-  seller_count: 1,
-  approval_lag_hours: "",
-};
-
-fillDemoBtn.addEventListener("click", () => {
-  // Expand all collapsible sections
-  document.querySelectorAll(".collapsible-section").forEach(sec => sec.open = true);
-
-  Object.entries(DEMO_ORDER).forEach(([id, val]) => {
-    const input = document.getElementById(id);
-    if (input) {
-      input.value = val;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i data-lucide="send" style="width: 16px; height: 16px;"></i><span>Predict Delay Risk</span>`;
+      if (window.lucide) window.lucide.createIcons();
     }
+  }
+}
+
+// 8. Render Prediction Result & Scroll Top
+function renderPredictionResult(data) {
+  const container = document.getElementById('result-container');
+  const badge = document.getElementById('res-risk-badge');
+  const probVal = document.getElementById('res-prob-val');
+  const recommendation = document.getElementById('res-recommendation');
+
+  if (container) container.style.display = 'block';
+
+  const riskText = data.risk_label || data.risk_level || (data.probability > 0.55 ? 'High' : data.probability > 0.3 ? 'Medium' : 'Low');
+  const probPct = (data.probability * 100).toFixed(1);
+
+  if (probVal) probVal.innerText = `${probPct}%`;
+  
+  if (recommendation) {
+    if (data.recommendation) {
+      recommendation.innerText = data.recommendation;
+    } else if (riskText === 'High') {
+      recommendation.innerText = 'Order exhibits high delay risk due to extended shipping distance and freight ratio. Reassign to express priority carrier and accelerate warehouse dispatch.';
+    } else if (riskText === 'Medium') {
+      recommendation.innerText = 'Moderate delay risk identified. Flag for priority processing and monitor carrier pickup times closely.';
+    } else {
+      recommendation.innerText = 'Low delay risk. Standard automated fulfillment pipeline approved.';
+    }
+  }
+
+  if (badge) {
+    badge.innerText = `${riskText.toUpperCase()} RISK (${probPct}%)`;
+    badge.className = `result-badge ${riskText}`;
+  }
+
+  // Smooth scroll to top of result container
+  if (container) {
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// 9. Scroll Reveal Observer
+function setupScrollReveal() {
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  reveals.forEach((el) => observer.observe(el));
+}
+
+// 10. Navbar Scroll Spy
+function setupScrollSpy() {
+  const sections = ['hero', 'about', 'features', 'how-it-works'];
+  const navbar = document.getElementById('navbar');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      if (navbar) navbar.classList.add('scrolled');
+    } else {
+      if (navbar) navbar.classList.remove('scrolled');
+    }
+
+    const predictView = document.getElementById('view-predict');
+    if (predictView && predictView.style.display !== 'none') {
+      document.querySelectorAll('.nav-btn').forEach((btn) => btn.classList.remove('active'));
+      const predictBtn = document.getElementById('nav-predict');
+      if (predictBtn) predictBtn.classList.add('active');
+      return;
+    }
+
+    let current = 'hero';
+    sections.forEach((secId) => {
+      const sec = document.getElementById(secId);
+      if (sec && sec.offsetWidth > 0) {
+        const top = sec.offsetTop - 140;
+        if (window.scrollY >= top) {
+          current = secId;
+        }
+      }
+    });
+
+    document.querySelectorAll('.nav-btn').forEach((btn) => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`nav-${current}`);
+    if (activeBtn) activeBtn.classList.add('active');
   });
+}
 
-  clearInlineErrors();
-  hideError();
-});
+// DOM Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  // Sync saved theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    document.documentElement.classList.remove('dark');
+  }
 
-// ── Reset Form Listener ───────────────────────────────────────────────────────
-resetBtn.addEventListener("click", () => {
-  form.reset();
-  clearInlineErrors();
-  hideError();
-
-  // Reset result panel state
-  resultCard.classList.add("hidden");
-  resultEmptyState.classList.remove("hidden");
+  checkHealth();
+  setInterval(checkHealth, 10000);
+  setupScrollReveal();
+  setupScrollSpy();
 });

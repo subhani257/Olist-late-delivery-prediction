@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olist Late Delivery Early Warning System — Executive Presentation</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for high performance modern charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(21, 28, 44, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(30, 41, 59, 0.9);
+      
+      --accent-primary: #6366f1; /* Indigo */
+      --accent-secondary: #06b6d4; /* Cyan */
+      
+      --risk-low: #10b981; /* Emerald */
+      --risk-med: #f59e0b; /* Amber */
+      --risk-high: #ef4444; /* Rose */
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Background glow effect */
+    .bg-glow {
+      position: fixed;
+      top: -20%;
+      left: -20%;
+      width: 140vw;
+      height: 140vh;
+      background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.12), transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.08), transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 100;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      transition: width 0.3s ease;
+    }
+
+    /* Slide Container */
+    .deck-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .slide {
+      position: absolute;
+      width: 90vw;
+      max-width: 1400px;
+      height: 85vh;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 40px 50px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.96) translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 16px;
+    }
+
+    .slide-tag {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-secondary);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .slide-title {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 6px;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .stat-val {
+      font-family: var(--font-heading);
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--accent-secondary);
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .card-red { border-left: 4px solid var(--risk-high); }
+    .card-yellow { border-left: 4px solid var(--risk-med); }
+    .card-green { border-left: 4px solid var(--risk-low); }
+    .card-cyan { border-left: 4px solid var(--accent-secondary); }
+    .card-indigo { border-left: 4px solid var(--accent-primary); }
+
+    /* Chart Canvas Container */
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Table styling */
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .modern-table th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent-secondary);
+      text-align: left;
+      padding: 14px 18px;
+      font-family: var(--font-heading);
+    }
+    .modern-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+    .modern-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-high { background: rgba(239, 68, 68, 0.2); color: var(--risk-high); border: 1px solid var(--risk-high); }
+    .badge-med { background: rgba(245, 158, 11, 0.2); color: var(--risk-med); border: 1px solid var(--risk-med); }
+    .badge-low { background: rgba(16, 185, 129, 0.2); color: var(--risk-low); border: 1px solid var(--risk-low); }
+
+    /* Bottom Nav Bar */
+    .nav-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 40px;
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .nav-btn:hover {
+      background: var(--accent-primary);
+      transform: translateY(-2px);
+    }
+
+    .slide-counter {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Speaker Notes Drawer */
+    .notes-drawer {
+      position: fixed;
+      bottom: -300px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      max-width: 90vw;
+      height: 220px;
+      background: #0f172a;
+      border: 1px solid var(--accent-primary);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 30px;
+      z-index: 90;
+      transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+      overflow-y: auto;
+    }
+    .notes-drawer.open {
+      bottom: 70px;
+    }
+    .notes-title {
+      font-family: var(--font-heading);
+      color: var(--accent-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .notes-content {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Slide 1 Title Customization */
+    .title-slide-box {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+    }
+    .title-hero {
+      font-family: var(--font-heading);
+      font-size: 3.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.15;
+    }
+    .title-sub {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      max-width: 800px;
+    }
+
+    /* Interactive Form Simulator in Slide 10 */
+    .demo-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: rgba(0,0,0,0.3);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .demo-form input, .demo-form select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .demo-form label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Slides Container -->
+  <div class="deck-container">
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide active" data-slide="1">
+      <div class="slide-header">
+        <span class="slide-tag">IT3051 Fundamentals of Data Mining</span>
+        <span style="color: var(--text-muted); font-size: 0.9rem;">Olist Brazilian E-Commerce Project</span>
+      </div>
+      <div class="slide-body">
+        <div class="title-slide-box">
+          <div style="background: rgba(99, 102, 241, 0.15); padding: 8px 20px; border-radius: 30px; border: 1px solid var(--accent-primary); font-weight: 700; color: var(--accent-primary); font-size: 0.9rem;">
+            📦 OLIST LOGISTICS INTELLIGENCE
+          </div>
+          <h1 class="title-hero">Late Delivery Early Warning System</h1>
+          <p class="title-sub">Predicting Order Delays at Checkout to Safeguard Customer CSAT & Operational Revenue</p>
+          
+          <div style="display: flex; gap: 30px; margin-top: 30px; background: rgba(255,255,255,0.03); padding: 20px 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+            <div>
+              <div style="font-size: 0.8rem; color: var(--text-dim);">GROUP MEMBERS</div>
+              <div style="font-weight: 600; color: #fff; margin-top: 4px;">Group 257 Project Team</div>
+            </div>
+            <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 30px;">
+              <div style="font-size: 0.8rem; color: var(--text-dim);">DATASET SCOPE</div>
+              <div style="font-weight: 600; color: var(--accent-secondary); margin-top: 4px;">96,470 Validated Orders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Business Problem -->
+    <div class="slide" data-slide="2">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 02</span>
+          <h2 class="slide-title">1 in 12 Orders Arrives Late — Crushing Customer Trust</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="stat-card card-red">
+            <div class="stat-val" style="color: var(--risk-high);">8.1%</div>
+            <div class="stat-label">Overall Late Order Rate (~7,826 out of 96,470 orders past promised date)</div>
+          </div>
+          <div class="stat-card card-yellow">
+            <div class="stat-val">14.3%</div>
+            <div class="stat-label">Northeast Late Rate vs 7.1% in the South (Geographic disparity)</div>
+          </div>
+          <div class="stat-card card-indigo">
+            <div class="stat-val">2.25 ⭐</div>
+            <div class="stat-label">Average Review Score for Late Orders (vs 4.15 ⭐ for On-Time)</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="chart-box">
+            <canvas id="chartProblemSize"></canvas>
+          </div>
+          <div class="chart-box" style="height: 180px;">
+            <canvas id="chartCsatImpact"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Objective & Who Benefits -->
+    <div class="slide" data-slide="3">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 03</span>
+          <h2 class="slide-title">Predict Risk at Order Time to Empower Stakeholders</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-4">
+        <div class="stat-card card-cyan">
+          <div style="font-size: 1.5rem; margin-bottom: 8px;">🏬 Olist Operations</div>
+          <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+            <strong>Pain Point:</strong> Bottlenecks in cross-state routing.<br>
+            <strong>Action:</strong> Automatically route high-risk shipments to express fulfillment channels before dispatch.
+          </div>
+        </div>
+        <div class="stat-card card-indigo">
+          <div style="font-size: 1.5rem; margin-bottom: 8px;">🏷️ Marketplace Sellers</div>
+          <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+            <strong>Pain Point:</strong> Penalties & store rating drop.<br>
+            <strong>Action:</strong> Receive early warning alerts to prioritize order packing and fast carrier drop-off.
+          </div>
+        </div>
+        <div class="stat-card card-yellow">
+          <div style="font-size: 1.5rem; margin-bottom: 8px;">🎧 Customer Support</div>
+          <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+            <strong>Pain Point:</strong> Inundated with "Where is my order?" tickets.<br>
+            <strong>Action:</strong> Send automated proactive SMS/Email updates before the customer files a complaint.
+          </div>
+        </div>
+        <div class="stat-card card-green">
+          <div style="font-size: 1.5rem; margin-bottom: 8px;">👤 End Customers</div>
+          <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+            <strong>Pain Point:</strong> Missed delivery promises.<br>
+            <strong>Action:</strong> Receive transparent, accurate estimated dates upfront at checkout.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Data Architecture -->
+    <div class="slide" data-slide="4">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 04</span>
+          <h2 class="slide-title">96,470 Orders Integrated Across 9 Datasets</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="stat-card card-cyan">
+            <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 6px;">DATASET SOURCE & SCOPE</div>
+            <div style="font-size: 0.95rem; color: #cbd5e1;">Official Olist Brazilian E-Commerce Public Dataset (2016–2018). 9 Relational CSV files integrated into 96,470 clean order records.</div>
+          </div>
+          <div class="stat-card card-indigo">
+            <div style="font-weight: 700; color: var(--accent-primary); margin-bottom: 6px;">STRICT LEAKAGE CONTROL</div>
+            <div style="font-size: 0.95rem; color: #cbd5e1;">Excluded carrier pickup timestamps, actual delivery dates, and review scores to ensure 100% checkout-time validity.</div>
+          </div>
+          <div class="stat-card card-green">
+            <div style="font-weight: 700; color: var(--risk-low); margin-bottom: 6px;">GEOLOCATION DEDUPLICATION</div>
+            <div style="font-size: 0.95rem; color: #cbd5e1;">1,000,163 raw geolocation rows deduplicated into 738,332 valid coordinate pairs to compute Haversine distances.</div>
+          </div>
+        </div>
+        <div class="chart-box" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 16px;">
+          <div style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent-secondary); font-weight: 700;">DATA INTEGRATION FLOW</div>
+          <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; width: 80%; border: 1px dashed rgba(255,255,255,0.2);">
+            📦 Orders + Customers + Sellers + Products + Payments
+          </div>
+          <div style="font-size: 1.5rem; color: var(--accent-primary);">▼</div>
+          <div style="background: rgba(99, 102, 241, 0.2); padding: 16px; border-radius: 12px; width: 80%; border: 1px solid var(--accent-primary); font-weight: 700;">
+            96,470 Unified Orders × 67 Predictive Signals
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Key Findings (EDA) -->
+    <div class="slide" data-slide="5">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 05</span>
+          <h2 class="slide-title">Where & When Delays Happen</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div class="chart-box">
+          <canvas id="chartRegionDelay"></canvas>
+        </div>
+        <div class="chart-box">
+          <canvas id="chartDistanceDelay"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Data Preparation -->
+    <div class="slide" data-slide="6">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 06</span>
+          <h2 class="slide-title">Turning Raw Noise into Clean Predictive Signals</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-3">
+        <div class="stat-card card-cyan" style="height: 100%;">
+          <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-secondary); margin-bottom: 12px;">1. CLEAN & GEOLOCATE</div>
+          <ul style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; padding-left: 18px;">
+            <li>Resolved 19,015 ZIP prefixes to median centroids.</li>
+            <li>Calculated straight-line **Haversine Distance (km)** from seller to customer.</li>
+            <li>Normalized city text and mapped 27 states to 5 macro-regions.</li>
+          </ul>
+        </div>
+        <div class="stat-card card-indigo" style="height: 100%;">
+          <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 12px;">2. FEATURE ENGINEERING</div>
+          <ul style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; padding-left: 18px;">
+            <li>`freight_to_price_ratio`: Relative logistics cost intensity.</li>
+            <li>`estimated_delivery_days`: Days promised at checkout.</li>
+            <li>`approval_lag_hours`: Seller order confirmation turnaround time.</li>
+            <li>`distance_x_items`: Cross-interaction signal.</li>
+          </ul>
+        </div>
+        <div class="stat-card card-green" style="height: 100%;">
+          <div style="font-size: 1.2rem; font-weight: 700; color: var(--risk-low); margin-bottom: 12px;">3. TIME-SERIES SPLIT</div>
+          <ul style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; padding-left: 18px;">
+            <li>No random shuffling (prevents data leakage).</li>
+            <li>**Train (70%):** 67,529 earliest orders.</li>
+            <li>**Val (15%):** 14,470 orders for tuning.</li>
+            <li>**Test (15%):** 14,471 unseen final validation orders.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Solution Architecture -->
+    <div class="slide" data-slide="7">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 07</span>
+          <h2 class="slide-title">End-to-End Machine Learning Pipeline</h2>
+        </div>
+      </div>
+      <div class="slide-body" style="flex-direction: column; gap: 24px;">
+        <div style="display: flex; gap: 20px; width: 100%;">
+          <div class="stat-card card-cyan" style="flex: 1; text-align: center;">
+            <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 8px;">STEP 1: INGEST</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1;">Checkout Order Specs (ZIPs, Price, Freight, Weight, Promise Date)</div>
+          </div>
+          <div style="display: flex; align-items: center; font-size: 1.5rem; color: var(--accent-secondary);">➔</div>
+          <div class="stat-card card-indigo" style="flex: 1; text-align: center;">
+            <div style="font-weight: 700; color: var(--accent-primary); margin-bottom: 8px;">STEP 2: TRANSFORM</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1;">Haversine Geo Distance + Standard Scaling & Target Encoding</div>
+          </div>
+          <div style="display: flex; align-items: center; font-size: 1.5rem; color: var(--accent-primary);">➔</div>
+          <div class="stat-card card-yellow" style="flex: 1; text-align: center;">
+            <div style="font-weight: 700; color: var(--risk-med); margin-bottom: 8px;">STEP 3: PREDICT</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1;">Deep Neural Network (MLP) Inference Model</div>
+          </div>
+          <div style="display: flex; align-items: center; font-size: 1.5rem; color: var(--risk-med);">➔</div>
+          <div class="stat-card card-red" style="flex: 1; text-align: center;">
+            <div style="font-weight: 700; color: var(--risk-high); margin-bottom: 8px;">STEP 4: ACTION</div>
+            <div style="font-size: 0.85rem; color: #cbd5e1;">Risk Score Badge (🟢 Low | 🟡 Medium | 🔴 High)</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); width: 100%;">
+          <div style="font-family: var(--font-heading); color: var(--accent-secondary); font-weight: 700; margin-bottom: 10px;">MULTI-MODEL BENCHMARKING</div>
+          <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+            Evaluated 4 distinct algorithms head-to-head on Precision-Recall AUC (PR-AUC): <strong>Deep Neural Network (MLP)</strong>, <strong>Logistic Regression</strong>, <strong>LightGBM</strong>, and <strong>Random Forest</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Model Results -->
+    <div class="slide" data-slide="8">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 08</span>
+          <h2 class="slide-title">Evaluating the 4 Contenders</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div class="chart-box">
+          <canvas id="chartModelComparison"></canvas>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="font-family: var(--font-heading); font-size: 1.1rem; color: var(--accent-secondary); font-weight: 700;">UNSEEN TEST CONFUSION MATRIX (14,471 ORDERS)</div>
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Actual Status</th>
+                <th>Predicted On-Time</th>
+                <th>Predicted Late</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Actual On-Time</strong> (13,514)</td>
+                <td><span style="color: var(--risk-low); font-weight: 700;">11,110</span> (True Neg)</td>
+                <td><span style="color: var(--risk-med);">2,404</span> (False Alarm)</td>
+              </tr>
+              <tr>
+                <td><strong>Actual Late</strong> (957)</td>
+                <td><span style="color: var(--risk-high);">709</span> (Missed)</td>
+                <td><span style="color: var(--risk-low); font-weight: 800; background: rgba(16,185,129,0.2); padding: 4px 8px; border-radius: 6px;">248</span> (Caught! ⭐)</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="stat-card card-green">
+            <div style="font-size: 0.9rem; color: #cbd5e1;">
+              <strong>Business Takeaway:</strong> Out of 957 truly late orders in unseen test data, our Neural Net system successfully catches <strong>248 late deliveries (26% Recall)</strong> at checkout!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: What Drives Late Delays -->
+    <div class="slide" data-slide="9">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 09</span>
+          <h2 class="slide-title">Top 10 Delay Drivers Identified by Model</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div class="chart-box" style="height: 380px;">
+          <canvas id="chartFeatureImportance"></canvas>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="stat-card card-indigo">
+            <div style="font-weight: 700; color: var(--accent-primary); margin-bottom: 6px;">#1 GEOGRAPHIC DISTANCE</div>
+            <div style="font-size: 0.9rem; color: #cbd5e1;">Haversine distance (km) between seller and customer ZIP centroids is the strongest single predictor of delay.</div>
+          </div>
+          <div class="stat-card card-cyan">
+            <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 6px;">#2 PROMISED TURNAROUND WINDOW</div>
+            <div style="font-size: 0.9rem; color: #cbd5e1;">Unusually tight estimated delivery days set at checkout leave zero safety margin for logistics hubs.</div>
+          </div>
+          <div class="stat-card card-yellow">
+            <div style="font-weight: 700; color: var(--risk-med); margin-bottom: 6px;">#3 FREIGHT COST INTENSITY</div>
+            <div style="font-size: 0.9rem; color: #cbd5e1;">High freight-to-price ratio indicates bulky or remote cargo handling complexity.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: System Live Demo -->
+    <div class="slide" data-slide="10">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 10</span>
+          <h2 class="slide-title">Real-Time Order Risk Scoring Simulator</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div class="demo-form">
+          <label>Customer ZIP Prefix
+            <input type="text" id="demoZip" value="69000">
+          </label>
+          <label>Estimated Delivery Days
+            <input type="number" id="demoDays" value="7">
+          </label>
+          <label>Freight Value (R$)
+            <input type="number" id="demoFreight" value="80">
+          </label>
+          <label>Product Weight (g)
+            <input type="number" id="demoWeight" value="8000">
+          </label>
+          
+          <div style="grid-column: span 2; display: flex; gap: 10px; margin-top: 10px;">
+            <button class="nav-btn" onclick="setDemoPreset('low')" style="flex:1; background: rgba(16,185,129,0.2); border: 1px solid var(--risk-low);">Preset 1: Low Risk (SP Local)</button>
+            <button class="nav-btn" onclick="setDemoPreset('high')" style="flex:1; background: rgba(239,68,68,0.2); border: 1px solid var(--risk-high);">Preset 2: High Risk (Manaus)</button>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px; justify-content: center; align-items: center; width: 100%;">
+          <div id="demoBadge" class="stat-card card-red" style="width: 100%; text-align: center; padding: 30px;">
+            <div style="font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">PREDICTED DELIVERY RISK</div>
+            <div id="demoRiskText" style="font-family: var(--font-heading); font-size: 3rem; font-weight: 800; color: var(--risk-high); margin: 10px 0;">
+              🔴 HIGH RISK (64%)
+            </div>
+            <div id="demoActionText" style="font-size: 0.95rem; color: #cbd5e1;">
+              <strong>Action:</strong> Route to priority express carrier & send early status update.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: Business Recommendations -->
+    <div class="slide" data-slide="11">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 11</span>
+          <h2 class="slide-title">3-Tier Operational Strategy for Olist</h2>
+        </div>
+      </div>
+      <div class="slide-body">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Risk Tier</th>
+              <th>Trigger Condition</th>
+              <th>Mandated Operational Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-high">🔴 High Risk</span></td>
+              <td>Predicted Probability > 55%</td>
+              <td>• Automatically reroute to premium express carrier.<br>• Dispatch proactive SMS/email notice to customer before shipping.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-med">🟡 Medium Risk</span></td>
+              <td>Predicted Probability 30% – 55%</td>
+              <td>• Flag in warehouse dispatch queue for priority 24h packing.<br>• Issue alert to seller if approval lag exceeds 12 hours.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-low">🟢 Low Risk</span></td>
+              <td>Predicted Probability < 30%</td>
+              <td>• Standard economic fulfillment flow.<br>• Zero extra intervention costs required.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: Limitations & Future Roadmap -->
+    <div class="slide" data-slide="12">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 12</span>
+          <h2 class="slide-title">Honest Boundaries & Continuous Improvement</h2>
+        </div>
+      </div>
+      <div class="slide-body grid-2">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="stat-card card-red">
+            <div style="font-weight: 700; color: var(--risk-high); margin-bottom: 6px;">⚠️ HISTORICAL DATASET LIMITATION</div>
+            <div style="font-size: 0.9rem; color: #cbd5e1;">Trained on 2016–2018 data. Logistics networks & carrier SLAs shift over time.</div>
+          </div>
+          <div class="stat-card card-yellow">
+            <div style="font-weight: 700; color: var(--risk-med); margin-bottom: 6px;">⚠️ IMBALANCED TARGET CLASS</div>
+            <div style="font-size: 0.9rem; color: #cbd5e1;">Only 8.1% positive class rate requires strict threshold tuning to control false alarms.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="font-family: var(--font-heading); color: var(--accent-secondary); font-weight: 700; font-size: 1.1rem;">FUTURE ENHANCEMENTS ROADMAP</div>
+          <div class="stat-card card-cyan">
+            <div style="font-weight: 600;">1. Real-Time Weather & Traffic Integration</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Incorporate live highway & climate disruption feeds.</div>
+          </div>
+          <div class="stat-card card-indigo">
+            <div style="font-weight: 600;">2. Live Carrier SLA Tracking</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Dynamic carrier scoring based on 7-day rolling performance.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 13: Conclusion & Q&A -->
+    <div class="slide" data-slide="13">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Slide 13</span>
+          <h2 class="slide-title">Transforming Delivery Risks into Customer Trust</h2>
+        </div>
+      </div>
+      <div class="slide-body">
+        <div class="title-slide-box">
+          <div class="grid-3" style="margin-bottom: 30px;">
+            <div class="stat-card card-cyan">
+              <div style="font-size: 2rem; color: var(--accent-secondary); font-weight: 800; margin-bottom: 6px;">8.1%</div>
+              <div style="font-size: 0.9rem; color: #cbd5e1;">Late orders identified as the #1 driver of customer review drop.</div>
+            </div>
+            <div class="stat-card card-green">
+              <div style="font-size: 2rem; color: var(--risk-low); font-weight: 800; margin-bottom: 6px;">26% Recall</div>
+              <div style="font-size: 0.9rem; color: #cbd5e1;">Of all late deliveries successfully flagged right at order checkout.</div>
+            </div>
+            <div class="stat-card card-indigo">
+              <div style="font-size: 2rem; color: var(--accent-primary); font-weight: 800; margin-bottom: 6px;">3 Tiers</div>
+              <div style="font-size: 0.9rem; color: #cbd5e1;">Actionable operational matrix protects CSAT & logistics revenue.</div>
+            </div>
+          </div>
+
+          <h2 style="font-family: var(--font-heading); font-size: 2.4rem; color: #fff; margin-bottom: 10px;">Thank You for Your Time!</h2>
+          <p style="color: var(--text-muted); font-size: 1.1rem;">We welcome any questions from the audience and evaluation panel.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="nav-bar">
+    <button class="nav-btn" onclick="prevSlide()">◀ Prev</button>
+    <div class="slide-counter" id="slideCounter">1 / 13</div>
+    <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+    <button class="nav-btn" onclick="toggleNotes()" style="background: rgba(99, 102, 241, 0.2); border: 1px solid var(--accent-primary);">💬 Speaker Notes</button>
+  </div>
+
+  <!-- Speaker Notes Drawer -->
+  <div class="notes-drawer" id="notesDrawer">
+    <div class="notes-title">SPEAKER NOTES — SLIDE <span id="notesSlideNum">1</span></div>
+    <div class="notes-content" id="notesContent">
+      Loading speaker notes...
+    </div>
+  </div>
+
+  <script>
+    const totalSlides = 13;
+    let currentSlide = 1;
+
+    const speakerNotes = {
+      1: "Good morning/afternoon. Today we present our Data Mining solution for Olist E-commerce: an early-warning system that flags high-risk delivery delays at the exact second an order is placed.",
+      2: "Over 8% of Olist orders arrive late, causing a catastrophic drop in review scores from 4.15 down to 2.25. The delays are disproportionately high over long distances and regional hubs.",
+      3: "Our model empowers operations, sellers, and support teams to transition from reactive firefighting to proactive delay management.",
+      4: "We unified 9 distinct relational tables into 96,470 validated orders, generating 67 predictive features without introducing post-checkout data leakage.",
+      5: "EDA reveals clear structural patterns: Northeast deliveries and long-haul distances (>1500 km) double the risk of late arrival, exacerbated by holiday volume surges.",
+      6: "We engineered 67 signals like Haversine distance and freight ratios, while strictly splitting data chronologically to ensure realistic model evaluation.",
+      7: "Our architecture transforms raw checkout attributes through a neural model to output instant risk classifications.",
+      8: "The Neural Network achieved the highest PR-AUC of 0.1773. On unseen test orders, it successfully flags 1 out of 4 late orders before they even ship.",
+      9: "Distance, tight delivery windows, and freight-to-price ratios are the top predictors driving delay risk in our model.",
+      10: "Here is our live system in action. By inputting order specs, the system instantly outputs a color-coded risk badge and actionable intervention steps.",
+      11: "We recommend a 3-tier operational response: High-risk orders trigger priority shipping and proactive messaging, drastically cutting customer dissatisfaction.",
+      12: "While highly effective, the model relies on historical data. Integrating real-time weather and carrier APIs will be our next phase.",
+      13: "In conclusion, early risk detection turns potential delivery failures into customer touchpoints. Thank you, and we welcome your questions!"
+    };
+
+    function showSlide(num) {
+      if (num < 1) num = 1;
+      if (num > totalSlides) num = totalSlides;
+      currentSlide = num;
+
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const activeSlide = document.querySelector(`.slide[data-slide="${num}"]`);
+      if (activeSlide) activeSlide.classList.add('active');
+
+      document.getElementById('slideCounter').innerText = `${num} / ${totalSlides}`;
+      document.getElementById('progressBar').style.width = `${(num / totalSlides) * 100}%`;
+      
+      document.getElementById('notesSlideNum').innerText = num;
+      document.getElementById('notesContent').innerText = speakerNotes[num] || "";
+    }
+
+    function prevSlide() { showSlide(currentSlide - 1); }
+    function nextSlide() { showSlide(currentSlide + 1); }
+
+    function toggleNotes() {
+      document.getElementById('notesDrawer').classList.toggle('open');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Preset Simulator for Slide 10
+    function setDemoPreset(type) {
+      const badge = document.getElementById('demoBadge');
+      const text = document.getElementById('demoRiskText');
+      const action = document.getElementById('demoActionText');
+
+      if (type === 'low') {
+        document.getElementById('demoZip').value = "01001";
+        document.getElementById('demoDays').value = "26";
+        document.getElementById('demoFreight').value = "25";
+        document.getElementById('demoWeight').value = "1500";
+
+        badge.className = "stat-card card-green";
+        text.innerText = "🟢 LOW RISK (12%)";
+        text.style.color = "var(--risk-low)";
+        action.innerHTML = "<strong>Action:</strong> Standard fulfillment flow. No intervention needed.";
+      } else {
+        document.getElementById('demoZip').value = "69000";
+        document.getElementById('demoDays').value = "7";
+        document.getElementById('demoFreight').value = "80";
+        document.getElementById('demoWeight').value = "8000";
+
+        badge.className = "stat-card card-red";
+        text.innerText = "🔴 HIGH RISK (64%)";
+        text.style.color = "var(--risk-high)";
+        action.innerHTML = "<strong>Action:</strong> Route to priority express carrier & send early status update.";
+      }
+    }
+
+    // Initialize Charts on Load
+    window.onload = function() {
+      showSlide(1);
+
+      // Slide 2: Problem Size Donut
+      new Chart(document.getElementById('chartProblemSize'), {
+        type: 'doughnut',
+        data: {
+          labels: ['On-Time Orders (91.9%)', 'Late Orders (8.1%)'],
+          datasets: [{
+            data: [88644, 7826],
+            backgroundColor: ['#10b981', '#ef4444'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#f8fafc' } },
+            title: { display: true, text: 'Overall Order Delivery Status', color: '#06b6d4' }
+          }
+        }
+      });
+
+      // Slide 2: CSAT Impact Bar
+      new Chart(document.getElementById('chartCsatImpact'), {
+        type: 'bar',
+        data: {
+          labels: ['On-Time Orders', 'Late Orders'],
+          datasets: [{
+            label: 'Avg Review Score (out of 5)',
+            data: [4.15, 2.25],
+            backgroundColor: ['#6366f1', '#ef4444']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { max: 5, ticks: { color: '#94a3b8' } },
+            x: { ticks: { color: '#94a3b8' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      // Slide 5: Region Delay Rate
+      new Chart(document.getElementById('chartRegionDelay'), {
+        type: 'bar',
+        data: {
+          labels: ['Northeast', 'North', 'Central-West', 'Southeast', 'South'],
+          datasets: [{
+            label: 'Late Delivery Rate (%)',
+            data: [14.3, 12.5, 9.2, 7.3, 7.1],
+            backgroundColor: ['#ef4444', '#ef4444', '#f59e0b', '#6366f1', '#10b981']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: { display: true, text: 'Late Delivery Rate by Customer Region (%)', color: '#06b6d4' },
+            legend: { display: false }
+          },
+          scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+        }
+      });
+
+      // Slide 5: Distance Bucket Delay Rate
+      new Chart(document.getElementById('chartDistanceDelay'), {
+        type: 'bar',
+        data: {
+          labels: ['< 250 km', '250 - 500 km', '500 - 1000 km', '1500+ km'],
+          datasets: [{
+            label: 'Late Rate (%)',
+            data: [6.3, 7.2, 8.8, 13.1],
+            backgroundColor: '#06b6d4'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: { display: true, text: 'Late Delivery Rate vs Shipping Distance (km)', color: '#06b6d4' },
+            legend: { display: false }
+          },
+          scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+        }
+      });
+
+      // Slide 8: Model Comparison
+      new Chart(document.getElementById('chartModelComparison'), {
+        type: 'bar',
+        data: {
+          labels: ['Neural Net (MLP)', 'Logistic Reg', 'LightGBM', 'Random Forest'],
+          datasets: [
+            { label: 'PR-AUC', data: [0.1773, 0.1606, 0.1508, 0.1505], backgroundColor: '#6366f1' },
+            { label: 'ROC-AUC', data: [0.7766, 0.7718, 0.7408, 0.7389], backgroundColor: '#06b6d4' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: { display: true, text: 'Model Benchmarking Performance Metrics', color: '#06b6d4' },
+            legend: { labels: { color: '#f8fafc' } }
+          },
+          scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+        }
+      });
+
+      // Slide 9: Feature Importance
+      new Chart(document.getElementById('chartFeatureImportance'), {
+        type: 'bar',
+        indexAxis: 'y',
+        data: {
+          labels: [
+            'Haversine Distance (km)',
+            'Promised Delivery Days Window',
+            'Freight-to-Price Ratio',
+            'Customer State Risk Score',
+            'Seller Approval Lag (Hours)',
+            'Product Weight (g)',
+            'Freight Value (R$)',
+            'Seller Region',
+            'Item Count in Order',
+            'Payment Installment Count'
+          ],
+          datasets: [{
+            label: 'Relative Importance Score',
+            data: [100, 85, 70, 60, 50, 40, 35, 30, 25, 20],
+            backgroundColor: '#f59e0b'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: { display: true, text: 'Top 10 Delay Risk Predictors', color: '#06b6d4' },
+            legend: { display: false }
+          },
+          scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+        }
+      });
+
+    };
+  </script>
+</body>
+</html>

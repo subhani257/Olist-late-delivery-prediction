@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;      /* Slate 50 */
+    --foreground: 222.2 84% 4.9%;   /* Slate 900 */
+
+    --card: 0 0% 100%;             /* White */
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 239 84% 67%;         /* Indigo 500 */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 214.3 31.8% 91.4%; /* Slate 200 */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;         /* Slate 100 */
+    --muted-foreground: 215.4 16.3% 46.9%; /* Slate 500 */
+
+    --accent: 239 84% 96%;          /* Indigo 50 */
+    --accent-foreground: 239 84% 50%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;     /* Slate 200 */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 239 84% 67%;
+
+    --radius: 1rem;                  /* 16px radius */
+  }
+
+  .dark {
+    --background: 224 71% 4%;        /* Slate 950 #020617 */
+    --foreground: 210 40% 98%;      /* Slate 50 */
+
+    --card: 222.2 84% 7.5%;         /* Slate 900 #0f172a */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 7.5%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 239 84% 67%;         /* Indigo 500 #6366f1 */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217.2 32.6% 17.5%; /* Slate 800 */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 12%;       /* Muted dark slate */
+    --muted-foreground: 215 20.2% 65.1%; /* Slate 400 */
+
+    --accent: 239 84% 16%;          /* Indigo dark tint */
+    --accent-foreground: 239 84% 75%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;    /* Slate 800 */
+    --input: 217.2 32.6% 17.5%;
+    --ring: 239 84% 67%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom Utilities for Design System */
+.eyebrow-pill {
+  @apply inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-wider uppercase rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 w-max;
+}
+
+.saas-card {
+  @apply bg-card text-card-foreground border border-border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover hover:border-indigo-500/30 relative overflow-hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}

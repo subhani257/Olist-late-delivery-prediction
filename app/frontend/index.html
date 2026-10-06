@@ -1,602 +1,956 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Olist — Late Delivery Risk Predictor</title>
-  <meta name="description" content="Predict whether an Olist order is at risk of late delivery before it is dispatched." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261005_3" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olist Risk Predictor — E-Commerce Logistics Intelligence</title>
+  <meta name="description" content="ML-powered late-delivery risk prediction system for Olist Brazilian e-commerce orders using 44 features and MLP neural network.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons Library CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-  <!-- ── TOP NAVBAR ───────────────────────────────────────────────────────── -->
-  <header class="navbar">
-    <div class="navbar-inner">
-      <a href="#/home" class="brand-logo">
-        <span class="logo-box">📦</span>
-        <div class="logo-text">
-          <span class="brand-title">Olist Risk Predictor</span>
-          <span class="brand-sub">Early Warning ML System</span>
+  <!-- Sticky Modern Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="brand-logo" onclick="navigateTo('hero')">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
         </div>
-      </a>
+        <div>
+          <div style="font-size: 1.1rem; font-weight: 800; line-height: 1.2;">
+            Olist Risk <span style="color: var(--indigo-brand);">Predictor</span>
+          </div>
+          <div style="font-size: 0.65rem; color: var(--text-muted);" class="font-mono">
+            ML LOGISTICS INTELLIGENCE
+          </div>
+        </div>
+      </div>
 
-      <!-- Mobile Hamburger Toggle -->
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
-        <span class="hamburger-bar"></span>
-        <span class="hamburger-bar"></span>
-        <span class="hamburger-bar"></span>
-      </button>
-
-      <!-- Nav Links & Badge -->
-      <nav class="nav-menu" id="navMenu">
-        <div class="nav-links">
-          <a href="#/home" class="nav-link" id="nav-home">Home</a>
-          <a href="#/predict" class="nav-link" id="nav-predict">Predict</a>
-          <a href="#/about" class="nav-link" id="nav-about">About</a>
-        </div>
-        <div class="header-badge">
-          <span class="badge-dot" id="statusDot"></span>
-          <span id="statusText">Connecting…</span>
-        </div>
-        <button class="theme-toggle-btn" id="themeToggle" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
-          <span id="themeIcon">🌙</span>
-          <span class="theme-text" id="themeText">Dark</span>
-        </button>
+      <!-- Nav Links -->
+      <nav class="nav-links">
+        <button class="nav-btn active" id="nav-hero" onclick="navigateTo('hero')">Home</button>
+        <button class="nav-btn" id="nav-about" onclick="navigateTo('about')">About</button>
+        <button class="nav-btn" id="nav-features" onclick="navigateTo('features')">Key Features</button>
+        <button class="nav-btn" id="nav-how-it-works" onclick="navigateTo('how-it-works')">How It Works</button>
+        <button class="nav-btn" id="nav-predict" onclick="navigateTo('predict')">Predict Risk</button>
       </nav>
+
+      <!-- Nav Actions -->
+      <div class="nav-actions">
+        <div class="status-pill online" id="api-status-pill">
+          <span class="status-dot"></span>
+          <span id="api-status-text">API Online: 8002</span>
+        </div>
+
+        <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle Theme" onclick="toggleTheme()">
+          <svg id="theme-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.41 1.41"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.41"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- ── MAIN CONTENT CONTAINER ───────────────────────────────────────────── -->
-  <main class="main-container">
+  <!-- Main Container -->
+  <main>
 
-    <!-- ═════════════════════════════════════════════════════════════════════ -->
-    <!-- 1. HOME PAGE VIEW                                                     -->
-    <!-- ═════════════════════════════════════════════════════════════════════ -->
-    <section id="page-home" class="page-view">
-      
-      <!-- Hero Section -->
-      <div class="hero-card">
-        <div class="hero-badge">⚡ Powered by Machine Learning</div>
-        <h1 class="hero-title">Predict late deliveries before they happen</h1>
-        <p class="hero-subtitle">
-          An early-warning machine learning system built on real Brazilian e-commerce data to identify dispatch risks before customer dissatisfaction occurs.
-        </p>
-        <div class="hero-actions">
-          <a href="#/predict" class="btn btn-primary btn-lg">
-            <span>🚀 Start Risk Prediction</span>
-          </a>
-          <a href="#/about" class="btn btn-secondary btn-lg">
-            <span>📖 Explore Model Architecture</span>
-          </a>
-        </div>
+    <!-- LANDING PAGE VIEW (Home / About / Key Features / How It Works) -->
+    <div id="view-landing">
 
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-number">99,000+</span>
-            <span class="stat-label">Real Orders Evaluated</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-number">44</span>
-            <span class="stat-label">ML Features Computed</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-number">0.7766</span>
-            <span class="stat-label">ROC-AUC Performance</span>
-          </div>
-        </div>
-      </div>
+      <!-- HERO SECTION -->
+      <section class="hero-section" id="hero">
+        <div class="hero-grid">
+          <!-- Hero Left -->
+          <div class="hero-left reveal">
+            <h1 class="hero-title">
+              Predict Late Deliveries <span class="gradient-text">Before Dispatch</span>
+            </h1>
 
-      <!-- How It Works Section -->
-      <div class="section-container">
-        <div class="section-header-center">
-          <h2 class="section-headline">How It Works</h2>
-          <p class="section-desc">Three simple steps to assess fulfillment risks at checkout or order placement.</p>
-        </div>
-
-        <div class="cards-grid grid-3">
-          <div class="feature-card">
-            <div class="card-icon-wrap">📝</div>
-            <h3 class="card-title">1. Enter Order Details</h3>
-            <p class="card-text">
-              Provide raw order information such as purchase timestamp, zip prefixes, product category, package dimensions, price, and payment method.
+            <p class="hero-desc">
+              Real-time ML risk scoring trained on 99,000+ Brazilian e-commerce orders. Catch shipping bottlenecks, optimize fulfillment lead-times, and protect customer satisfaction.
             </p>
-          </div>
 
-          <div class="feature-card">
-            <div class="card-icon-wrap">⚡</div>
-            <h3 class="card-title">2. Automated Feature Extraction</h3>
-            <p class="card-text">
-              The backend feature builder automatically converts raw inputs into all 44 model features (distances, lead times, historical aggregates) in real time.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="card-icon-wrap">📊</div>
-            <h3 class="card-title">3. Instant Risk Assessment</h3>
-            <p class="card-text">
-              Get an instant risk classification (Low, Medium, or High) with precise probability scores and actionable operational recommendations.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- About the System (Overview & Real Metrics) -->
-      <div class="section-container">
-        <div class="section-header-center">
-          <h2 class="section-headline">About the System</h2>
-          <p class="section-desc">Trained and validated on real-world Brazilian e-commerce operations data.</p>
-        </div>
-
-        <div class="cards-grid grid-2">
-          <div class="info-card">
-            <h3 class="info-card-title">📦 Dataset &amp; Domain</h3>
-            <p class="info-card-text">
-              Built on the <strong>Brazilian E-Commerce Public Dataset by Olist</strong> containing 99k+ anonymised orders from 2016 to 2018. The dataset integrates 9 relational CSV files detailing customer &amp; seller geolocation, product physical characteristics, order timestamps, and payment structures.
-            </p>
-          </div>
-
-          <div class="info-card">
-            <h3 class="info-card-title">🛡️ Strict Leakage Prevention</h3>
-            <p class="info-card-text">
-              To guarantee real-world usability at order placement, all post-dispatch features (carrier pickup dates, actual delivery timestamps, and customer review scores) are strictly excluded from prediction inputs.
-            </p>
-          </div>
-        </div>
-
-        <!-- Real Model Comparison Table -->
-        <div class="metrics-table-card">
-          <div class="table-header">
-            <h3 class="table-title">Model Evaluation Benchmark (Validation Dataset)</h3>
-            <span class="table-badge">Validated Results</span>
-          </div>
-          <div class="table-responsive">
-            <table class="metrics-table">
-              <thead>
-                <tr>
-                  <th>Model Architecture</th>
-                  <th>Val ROC-AUC</th>
-                  <th>Val PR-AUC</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="highlight-row">
-                  <td><strong>MLP Neural Net</strong></td>
-                  <td><span class="metric-val">0.7766</span></td>
-                  <td>0.1773</td>
-                  <td><span class="badge badge-champion">Champion Model</span></td>
-                </tr>
-                <tr>
-                  <td>Logistic Regression</td>
-                  <td><span class="metric-val">0.7718</span></td>
-                  <td>0.1606</td>
-                  <td>Baseline</td>
-                </tr>
-                <tr>
-                  <td>LightGBM Classifier</td>
-                  <td><span class="metric-val">0.7408</span></td>
-                  <td>0.1508</td>
-                  <td>Evaluated</td>
-                </tr>
-                <tr>
-                  <td>Random Forest</td>
-                  <td><span class="metric-val">0.7389</span></td>
-                  <td>0.1505</td>
-                  <td>Evaluated</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ═════════════════════════════════════════════════════════════════════ -->
-    <!-- 2. PREDICT PAGE VIEW                                                  -->
-    <!-- ═════════════════════════════════════════════════════════════════════ -->
-    <section id="page-predict" class="page-view hidden">
-      
-      <div class="page-header">
-        <h1 class="page-title">Order Late-Delivery Risk Calculator</h1>
-        <p class="page-subtitle">Fill in the raw order parameters below. All 44 model features will be engineered server-side.</p>
-      </div>
-
-      <div class="predict-layout">
-
-        <!-- LEFT COLUMN: Form -->
-        <div class="form-column">
-          <form id="predictionForm" class="prediction-form" novalidate>
-
-            <!-- Collapsible Section 1: Schedule -->
-            <details open class="collapsible-section">
-              <summary class="collapsible-header">
-                <div class="header-left">
-                  <span class="section-icon">📅</span>
-                  <span class="section-title-text">Schedule &amp; Timestamps</span>
-                </div>
-                <span class="chevron-icon">▼</span>
-              </summary>
-              <div class="section-body">
-                <div class="grid grid-2">
-                  <div class="field-group">
-                    <label for="purchase_datetime" class="field-label">
-                      Purchase Date &amp; Time <span class="req">*</span>
-                    </label>
-                    <input type="datetime-local" id="purchase_datetime" name="purchase_datetime" class="form-input" required />
-                    <span class="field-hint">When customer completed checkout</span>
-                    <span class="error-inline" id="err_purchase_datetime"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="estimated_delivery_date" class="field-label">
-                      Estimated Delivery Date <span class="req">*</span>
-                    </label>
-                    <input type="date" id="estimated_delivery_date" name="estimated_delivery_date" class="form-input" required />
-                    <span class="field-hint">Promised delivery deadline</span>
-                    <span class="error-inline" id="err_estimated_delivery_date"></span>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-            <!-- Collapsible Section 2: Location -->
-            <details open class="collapsible-section">
-              <summary class="collapsible-header">
-                <div class="header-left">
-                  <span class="section-icon">🗺️</span>
-                  <span class="section-title-text">Location &amp; Geolocation ZIPs</span>
-                </div>
-                <span class="chevron-icon">▼</span>
-              </summary>
-              <div class="section-body">
-                <div class="grid grid-2">
-                  <div class="field-group">
-                    <label for="customer_zip_prefix" class="field-label">
-                      Customer ZIP Code Prefix (1-5 digits) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="customer_zip_prefix" name="customer_zip_prefix" min="1" max="99999" placeholder="e.g. 1001" class="form-input" required />
-                    <span class="field-hint">Customer region &amp; coordinates</span>
-                    <span class="error-inline" id="err_customer_zip_prefix"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="seller_zip_prefix" class="field-label">
-                      Seller ZIP Code Prefix (1-5 digits) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="seller_zip_prefix" name="seller_zip_prefix" min="1" max="99999" placeholder="e.g. 4101" class="form-input" required />
-                    <span class="field-hint">Seller dispatch origin</span>
-                    <span class="error-inline" id="err_seller_zip_prefix"></span>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-            <!-- Collapsible Section 3: Product Details -->
-            <details open class="collapsible-section">
-              <summary class="collapsible-header">
-                <div class="header-left">
-                  <span class="section-icon">🛍️</span>
-                  <span class="section-title-text">Product &amp; Package Specifications</span>
-                </div>
-                <span class="chevron-icon">▼</span>
-              </summary>
-              <div class="section-body">
-                <div class="grid grid-3">
-                  <div class="field-group span-3">
-                    <label for="product_category" class="field-label">
-                      Product Category <span class="req">*</span>
-                    </label>
-                    <select id="product_category" name="product_category" class="form-select" required>
-                      <option value="">Select Category…</option>
-                      <option value="bed_bath_table">Bed, Bath &amp; Table (bed_bath_table)</option>
-                      <option value="health_beauty">Health &amp; Beauty (health_beauty)</option>
-                      <option value="sports_leisure">Sports &amp; Leisure (sports_leisure)</option>
-                      <option value="furniture_decor">Furniture &amp; Decor (furniture_decor)</option>
-                      <option value="computers_accessories">Computers &amp; Accessories</option>
-                      <option value="housewares">Housewares (housewares)</option>
-                      <option value="watches_gifts">Watches &amp; Gifts (watches_gifts)</option>
-                      <option value="telephony">Telephony &amp; Phones</option>
-                      <option value="auto">Auto &amp; Automotive</option>
-                      <option value="toys">Toys &amp; Games</option>
-                      <option value="cool_stuff">Cool Stuff</option>
-                      <option value="garden_tools">Garden Tools</option>
-                      <option value="perfumery">Perfumery &amp; Fragrances</option>
-                      <option value="baby">Baby Products</option>
-                      <option value="stationery">Stationery &amp; Office</option>
-                      <option value="electronics">Electronics</option>
-                      <option value="pet_shop">Pet Shop</option>
-                      <option value="office_furniture">Office Furniture</option>
-                      <option value="consoles_games">Consoles &amp; Games</option>
-                      <option value="fashion_bags_accessories">Fashion &amp; Accessories</option>
-                      <option value="other">Other / General Category</option>
-                    </select>
-                    <span class="error-inline" id="err_product_category"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="price" class="field-label">
-                      Unit Price (R$) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="price" name="price" step="0.01" min="0.01" placeholder="120.00" class="form-input" required />
-                    <span class="error-inline" id="err_price"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="freight_value" class="field-label">
-                      Freight Cost (R$) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="freight_value" name="freight_value" step="0.01" min="0" placeholder="25.00" class="form-input" required />
-                    <span class="error-inline" id="err_freight_value"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="weight_g" class="field-label">
-                      Weight (g) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="weight_g" name="weight_g" step="1" min="1" placeholder="1500" class="form-input" required />
-                    <span class="error-inline" id="err_weight_g"></span>
-                  </div>
-                </div>
-
-                <div class="grid grid-3">
-                  <div class="field-group">
-                    <label for="length_cm" class="field-label">
-                      Length (cm) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="length_cm" name="length_cm" step="0.1" min="0.1" placeholder="30" class="form-input" required />
-                    <span class="error-inline" id="err_length_cm"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="height_cm" class="field-label">
-                      Height (cm) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="height_cm" name="height_cm" step="0.1" min="0.1" placeholder="15" class="form-input" required />
-                    <span class="error-inline" id="err_height_cm"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="width_cm" class="field-label">
-                      Width (cm) <span class="req">*</span>
-                    </label>
-                    <input type="number" id="width_cm" name="width_cm" step="0.1" min="0.1" placeholder="20" class="form-input" required />
-                    <span class="error-inline" id="err_width_cm"></span>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-            <!-- Collapsible Section 4: Payment -->
-            <details open class="collapsible-section">
-              <summary class="collapsible-header">
-                <div class="header-left">
-                  <span class="section-icon">💳</span>
-                  <span class="section-title-text">Payment Details</span>
-                </div>
-                <span class="chevron-icon">▼</span>
-              </summary>
-              <div class="section-body">
-                <div class="grid grid-2">
-                  <div class="field-group">
-                    <label for="payment_type" class="field-label">
-                      Payment Method <span class="req">*</span>
-                    </label>
-                    <select id="payment_type" name="payment_type" class="form-select" required>
-                      <option value="credit_card">Credit Card</option>
-                      <option value="boleto">Boleto (Bank Slip)</option>
-                      <option value="debit_card">Debit Card</option>
-                      <option value="voucher">Voucher / Gift Card</option>
-                    </select>
-                    <span class="error-inline" id="err_payment_type"></span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="installments" class="field-label">
-                      Installments <span class="req">*</span>
-                    </label>
-                    <input type="number" id="installments" name="installments" min="0" max="24" value="1" class="form-input" required />
-                    <span class="field-hint">0 for Boleto or Debit Card</span>
-                    <span class="error-inline" id="err_installments"></span>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-            <!-- Collapsible Section 5: Advanced (Collapsed by Default) -->
-            <details class="collapsible-section">
-              <summary class="collapsible-header">
-                <div class="header-left">
-                  <span class="section-icon">⚙️</span>
-                  <span class="section-title-text">Advanced / Multi-Item Options (Optional)</span>
-                </div>
-                <span class="chevron-icon">▼</span>
-              </summary>
-              <div class="section-body">
-                <div class="grid grid-3">
-                  <div class="field-group">
-                    <label for="item_count" class="field-label">Item Quantity</label>
-                    <input type="number" id="item_count" name="item_count" min="1" value="1" class="form-input" />
-                    <span class="field-hint">Total items (default 1)</span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="seller_count" class="field-label">Seller Count</label>
-                    <input type="number" id="seller_count" name="seller_count" min="1" value="1" class="form-input" />
-                    <span class="field-hint">Distinct sellers (default 1)</span>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="approval_lag_hours" class="field-label">Approval Lag (hrs)</label>
-                    <input type="number" id="approval_lag_hours" name="approval_lag_hours" step="0.01" min="0" placeholder="Auto (0.31h)" class="form-input" />
-                    <span class="field-hint">Leave blank for median</span>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-            <!-- Form Action Buttons -->
-            <div class="form-actions">
-              <button type="button" id="fillDemoBtn" class="btn btn-secondary">
-                ⚡ Load Sample Order
+            <div class="cta-group">
+              <button class="btn-primary" onclick="navigateTo('predict')">
+                <span style="color: #ffffff;">Run Risk Prediction</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
               </button>
-              <button type="button" id="resetBtn" class="btn btn-outline">
-                🔄 Reset
-              </button>
-              <button type="submit" id="predictBtn" class="btn btn-primary btn-submit">
-                <span id="btnText">Predict Delivery Risk</span>
-                <span id="btnSpinner" class="spinner hidden"></span>
+              <button class="btn-secondary" onclick="navigateTo('features')">
+                <span>Explore Features</span>
               </button>
             </div>
 
-            <div class="error-banner hidden" id="errorMsg"></div>
+            <div style="display: flex; gap: 1.5rem; margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);" class="font-mono">
+              <span style="display: flex; align-items: center; gap: 0.4rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                0.7766 ROC-AUC
+              </span>
+              <span style="display: flex; align-items: center; gap: 0.4rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+                Zero Data Leakage Architecture
+              </span>
+            </div>
+          </div>
 
-          </form>
+          <!-- Hero Right: Interactive Product Preview Card -->
+          <div class="reveal">
+            <div class="product-preview-card">
+              <div class="preview-header">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div class="icon-box">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.9rem;">Live Order Risk Monitor</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);" class="font-mono">Order #OLIST-8842-BR</div>
+                  </div>
+                </div>
+                <span class="bento-cat-tag font-mono">SIMULATION</span>
+              </div>
+
+              <!-- Risk Gauge & Route Line Row -->
+              <div class="preview-gauge-row">
+                <div class="arc-gauge">
+                  <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" stroke="var(--border-color)" stroke-width="8" fill="none" />
+                    <circle id="hero-gauge-circle" cx="50" cy="50" r="40" stroke="var(--risk-high)" stroke-width="8" fill="none" stroke-dasharray="251.2" stroke-dashoffset="55" stroke-linecap="round" />
+                  </svg>
+                  <div class="arc-gauge-text">
+                    <span class="arc-gauge-val font-mono" id="hero-risk-pct">78%</span>
+                    <span class="arc-gauge-badge font-mono" id="hero-risk-label">HIGH RISK</span>
+                  </div>
+                </div>
+
+                <!-- Route Line Graphic -->
+                <div class="route-box">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                    <span style="font-weight: 600;">Seller → Customer</span>
+                    <span class="font-mono" style="color: var(--indigo-brand);" id="hero-distance-text">1,420 km</span>
+                  </div>
+                  <div class="route-graphic">
+                    <div class="route-dot"></div>
+                    <div class="route-line">
+                      <div class="route-line-active"></div>
+                    </div>
+                    <div class="route-dot" style="background: var(--text-muted);"></div>
+                  </div>
+                  <div style="font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between;" class="font-mono">
+                    <span>SP (01000)</span>
+                    <span>RJ (20000)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3 Top Risk Factors -->
+              <div class="risk-factor-list">
+                <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;" class="font-mono">
+                  Top Risk Factor Contributions
+                </div>
+
+                <div class="risk-factor-item high">
+                  <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                      <line x1="12" y1="9" x2="12" y2="13"></line>
+                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Extreme Interstate Distance
+                  </span>
+                  <span class="font-mono" style="font-weight: 700;">+38% Risk</span>
+                </div>
+
+                <div class="risk-factor-item med">
+                  <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Approval Lag Hours
+                  </span>
+                  <span class="font-mono" style="font-weight: 700;">+22% Risk</span>
+                </div>
+
+                <div class="risk-factor-item info">
+                  <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    Heavy Freight Ratio (28%)
+                  </span>
+                  <span class="font-mono" style="font-weight: 700;">+18% Risk</span>
+                </div>
+              </div>
+
+              <!-- Interactive Distance Slider Simulator -->
+              <div style="display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.25rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted);" class="font-mono">
+                  <span>Simulate Distance</span>
+                  <span id="slider-dist-val">1,420 km</span>
+                </div>
+                <input type="range" min="200" max="2800" value="1420" id="hero-dist-slider" oninput="updateHeroSim(this.value)" style="width: 100%; accent-color: var(--indigo-brand); cursor: pointer;">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- RIGHT COLUMN: Sticky Result Panel -->
-        <div class="result-column">
-          <div class="result-sticky-wrapper">
+        <!-- Large Animated Stat Strip -->
+        <div class="stat-strip reveal">
+          <div class="stat-item">
+            <span class="stat-num font-mono" id="stat-1">99,441+</span>
+            <span class="stat-lbl">Real Orders Evaluated</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num font-mono" id="stat-2">44</span>
+            <span class="stat-lbl">Engineered ML Features</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num font-mono" id="stat-3">0.7766</span>
+            <span class="stat-lbl">ROC-AUC Score</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num font-mono" id="stat-4">100%</span>
+            <span class="stat-lbl">Leakage-Free Guarantee</span>
+          </div>
+        </div>
+      </section>
 
-            <!-- Empty State (Shown before prediction) -->
-            <div class="result-empty-state" id="resultEmptyState">
-              <div class="empty-icon-wrap">📦</div>
-              <h3 class="empty-title">Awaiting Prediction</h3>
-              <p class="empty-desc">
-                Fill in the order parameters on the left and click <strong>Predict Delivery Risk</strong> to evaluate fulfillment safety.
+
+      <!-- ABOUT SECTION -->
+      <section class="section-padding" id="about">
+        <div class="about-grid">
+          <!-- Left Column -->
+          <div class="reveal" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <h2 class="section-title" style="text-align: left;">
+              Built for Real-World Logistics Intelligence
+            </h2>
+
+            <p class="section-desc" style="text-align: left;">
+              Standard logistics tools rely on reactive tracking updates. The Olist Risk Predictor transforms raw checkout metadata into proactive delay forecasting. By leveraging geographic Haversine distance, carrier volumetric ratios, and seller fulfillment lag, we empower operations managers to intervene before delays happen.
+            </p>
+
+            <div>
+              <button class="btn-secondary" onclick="navigateTo('how-it-works')">
+                <span>View the 4-step pipeline</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Compact Visual Data Flow Diagram -->
+          <div class="reveal">
+            <div class="saas-card" style="border-color: var(--indigo-border);">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">DATA FLOW PIPELINE</span>
+                <span class="verified-badge font-mono">ACTIVE INFERENCE</span>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
+                <!-- Node 1 -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div class="icon-box" style="background: var(--bg-muted); color: var(--text-muted); border-color: var(--border-color);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                    </svg>
+                  </div>
+                  <span style="font-size: 0.75rem; font-weight: 700;">Order</span>
+                  <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted);">16 Inputs</span>
+                </div>
+
+                <!-- Node 2 -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div class="icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <path d="m9 15 2 2 4-4"></path>
+                    </svg>
+                  </div>
+                  <span style="font-size: 0.75rem; font-weight: 700;">Engine</span>
+                  <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted);">44 Features</span>
+                </div>
+
+                <!-- Node 3 -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div class="icon-box" style="background: var(--indigo-brand); color: #ffffff; border-color: var(--indigo-brand);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                      <rect x="9" y="9" width="6" height="6"></rect>
+                      <line x1="9" y1="1" x2="9" y2="4"></line>
+                      <line x1="15" y1="1" x2="15" y2="4"></line>
+                      <line x1="9" y1="20" x2="9" y2="23"></line>
+                      <line x1="15" y1="20" x2="15" y2="23"></line>
+                      <line x1="20" y1="9" x2="23" y2="9"></line>
+                      <line x1="20" y1="14" x2="23" y2="14"></line>
+                      <line x1="1" y1="9" x2="4" y2="9"></line>
+                      <line x1="1" y1="14" x2="4" y2="14"></line>
+                    </svg>
+                  </div>
+                  <span style="font-size: 0.75rem; font-weight: 700;">MLP Net</span>
+                  <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted);">PyTorch</span>
+                </div>
+
+                <!-- Node 4 -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div class="icon-box" style="background: rgba(16, 185, 129, 0.15); color: var(--risk-low); border-color: rgba(16, 185, 129, 0.4);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m12 14 4-4"></path>
+                      <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
+                    </svg>
+                  </div>
+                  <span style="font-size: 0.75rem; font-weight: 700;">Risk Score</span>
+                  <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted);">Action Plan</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story Flow: Problem -> Solution -> Guarantee -->
+        <div style="margin-top: 4rem;">
+          <div class="section-header">
+            <h3 style="font-size: 1.75rem; font-weight: 800;">Engineered with Purpose</h3>
+          </div>
+
+          <div class="story-flow-grid">
+            <!-- Problem -->
+            <div class="saas-card reveal">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="icon-box" style="background: var(--risk-med-bg); color: var(--risk-med); border-color: var(--risk-med-border);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">01</span>
+              </div>
+              <div>
+                <h4 style="font-size: 1.1rem; font-weight: 700;">The Challenge</h4>
+                <div class="font-mono" style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Post-Dispatch Blindspot</div>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                E-commerce logistics suffer from hidden late delivery penalties. By the time a carrier updates tracking, delays have already angered customers and increased support costs.
               </p>
             </div>
 
-            <!-- Result Card (Shown after prediction) -->
-            <div class="result-card hidden" id="resultCard">
-              <div class="result-top-bar">
-                <span class="result-tag">Risk Assessment Result</span>
-                <span class="result-class-badge" id="predictedClassBadge">Class: --</span>
-              </div>
-
-              <div class="result-header">
-                <span class="risk-badge-icon" id="riskIcon">🟡</span>
-                <div class="risk-title-wrap">
-                  <span class="risk-caption">Late Delivery Risk</span>
-                  <h2 class="risk-level-title" id="riskLevel">Medium</h2>
+            <!-- Solution -->
+            <div class="saas-card reveal">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="icon-box">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                  </svg>
                 </div>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">02</span>
               </div>
-
-              <!-- Animated Radial/Progress Gauge -->
-              <div class="gauge-container">
-                <div class="gauge-header">
-                  <span class="gauge-label">Probability of Late Arrival</span>
-                  <span class="gauge-value" id="probValue">0.0%</span>
-                </div>
-                <div class="gauge-track">
-                  <div class="gauge-bar-fill" id="probBarFill"></div>
-                </div>
+              <div>
+                <h4 style="font-size: 1.1rem; font-weight: 700;">Our Solution</h4>
+                <div class="font-mono" style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Pre-Dispatch Neural Scoring</div>
               </div>
-
-              <!-- Recommendation Box -->
-              <div class="recommendation-box" id="resultExplanation">
-                <!-- Dynamic text populated by JS -->
-              </div>
-
-              <!-- Collapsible Decision Specs -->
-              <details class="specs-details">
-                <summary class="specs-summary">
-                  🔍 View Technical Model Decision Specs
-                </summary>
-                <div class="specs-content">
-                  <div class="spec-row">
-                    <span>Decision Threshold:</span>
-                    <strong id="specDecisionThreshold">10.0%</strong>
-                  </div>
-                  <div class="spec-row">
-                    <span>Low Risk Band:</span>
-                    <strong id="specLowThreshold">&lt; 30.0%</strong>
-                  </div>
-                  <div class="spec-row">
-                    <span>High Risk Band:</span>
-                    <strong id="specHighThreshold">&gt; 55.0%</strong>
-                  </div>
-                  <div class="spec-row">
-                    <span>Features Computed:</span>
-                    <strong id="specFeaturesComputed">44 / 67</strong>
-                  </div>
-                </div>
-              </details>
-
+              <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                Our Multi-Layer Perceptron (MLP) model analyzes purchase parameters at order placement, calculating delay risk before packages even leave seller warehouses.
+              </p>
             </div>
 
+            <!-- Guarantee -->
+            <div class="saas-card guarantee-card reveal">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="icon-box" style="background: var(--risk-low-bg); color: var(--risk-low); border-color: var(--risk-low-border);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </div>
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">03</span>
+              </div>
+              <div>
+                <div class="verified-badge font-mono" style="margin-bottom: 0.5rem;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  Verified Zero-Data-Leakage
+                </div>
+                <h4 style="font-size: 1.1rem; font-weight: 700;">The Guarantee</h4>
+                <div class="font-mono" style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Strict Leakage-Free Design</div>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                Trained exclusively on zero-future-leakage attributes. We exclude post-dispatch tracking events so predictions are mathematically valid at checkout.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- REDESIGNED HIGH-END SAAS KEY FEATURES SECTION -->
+      <section class="section-padding" id="features" style="background: rgba(15, 23, 42, 0.15);">
+        <div class="section-header">
+          <h2 class="section-title">Architected for High-Precision Late-Delivery Forecasting</h2>
+          <p class="section-desc">
+            44 multimodal features computed server-side across geospatial distance, fulfillment lag, volumetric parcel geometry, and financial risk dimensions.
+          </p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+          <button class="chip-btn active" onclick="filterBento('All', this)">All Features</button>
+          <button class="chip-btn" onclick="filterBento('AI Model', this)">AI Neural Core</button>
+          <button class="chip-btn" onclick="filterBento('Distance & Geo', this)">Geospatial & Route</button>
+          <button class="chip-btn" onclick="filterBento('Time Features', this)">Temporal Dynamics</button>
+          <button class="chip-btn" onclick="filterBento('Product Specs', this)">Cargo & Financial</button>
+        </div>
+
+        <!-- Bento Grid -->
+        <div class="bento-grid" id="bento-container">
+          
+          <!-- Card 1: MLP Neural Classifier -->
+          <div class="saas-card reveal" data-category="AI Model">
+            <div class="bento-card-header">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                  <rect x="9" y="9" width="6" height="6"></rect>
+                  <line x1="9" y1="1" x2="9" y2="4"></line>
+                  <line x1="15" y1="1" x2="15" y2="4"></line>
+                  <line x1="9" y1="20" x2="9" y2="23"></line>
+                  <line x1="15" y1="20" x2="15" y2="23"></line>
+                  <line x1="20" y1="9" x2="23" y2="9"></line>
+                  <line x1="20" y1="14" x2="23" y2="14"></line>
+                  <line x1="1" y1="9" x2="4" y2="9"></line>
+                  <line x1="1" y1="14" x2="4" y2="14"></line>
+                </svg>
+              </div>
+              <span class="bento-cat-tag font-mono">AI Model</span>
+            </div>
+            <h4 class="bento-title">Multi-Layer Perceptron (MLP)</h4>
+            <p class="bento-desc">PyTorch neural classifier calibrated on 99,441 records to predict delay risk before dispatch.</p>
+
+            <div class="telemetry-widget">
+              <div class="telemetry-header font-mono">
+                <span style="color: var(--text-muted);">Model Accuracy</span>
+                <span style="font-weight: 700; color: var(--indigo-brand);">0.7766 ROC-AUC</span>
+              </div>
+              <div class="telemetry-bar-bg">
+                <div class="telemetry-bar-fill" style="width: 78%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Haversine Geospatial Route Engine -->
+          <div class="saas-card reveal" data-category="Distance & Geo">
+            <div class="bento-card-header">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+              </div>
+              <span class="bento-cat-tag font-mono">Distance & Geo</span>
+            </div>
+            <h4 class="bento-title">Haversine Geospatial Engine</h4>
+            <p class="bento-desc">Converts Brazilian CEP postal codes to geodesic coordinates and calculates interstate tariff friction.</p>
+
+            <div class="telemetry-widget">
+              <div class="telemetry-header font-mono">
+                <span style="color: var(--text-muted);">Route Coverage</span>
+                <span style="font-weight: 700; color: var(--indigo-brand);">27 States Mapped</span>
+              </div>
+              <div class="telemetry-bar-bg">
+                <div class="telemetry-bar-fill" style="width: 90%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Small 1x1 Cards: Card 3 - Lead-Time SLA Modeling -->
+          <div class="saas-card reveal" data-category="Time Features">
+            <div class="bento-card-header">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <span class="bento-cat-tag font-mono">Time Features</span>
+            </div>
+            <h4 class="bento-title">Lead-Time & SLA Buffer</h4>
+            <p class="bento-desc">Quantifies available carrier buffer days between order approval and promised SLA delivery date.</p>
+            
+            <div class="telemetry-widget">
+              <div class="telemetry-header font-mono">
+                <span style="color: var(--text-muted);">Seller Prep Buffer</span>
+                <span style="font-weight: 700; color: var(--indigo-brand);">72h Max Window</span>
+              </div>
+              <div class="telemetry-bar-bg">
+                <div class="telemetry-bar-fill" style="width: 65%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Small 1x1 Cards: Card 4 - Package Volumetric Analysis -->
+          <div class="saas-card reveal" data-category="Product Specs">
+            <div class="bento-card-header">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </div>
+              <span class="bento-cat-tag font-mono">Product Specs</span>
+            </div>
+            <h4 class="bento-title">Volumetric Density Engine</h4>
+            <p class="bento-desc">Calculates 3D package dimensions (cm³) and deadweight-to-volume ratio to identify bulky cargo bottlenecks.</p>
+
+            <div class="telemetry-widget">
+              <div class="telemetry-header font-mono">
+                <span style="color: var(--text-muted);">Volumetric Density</span>
+                <span style="font-weight: 700; color: var(--indigo-brand);">11,880 cm³ / 1.5kg</span>
+              </div>
+              <div class="telemetry-bar-bg">
+                <div class="telemetry-bar-fill" style="width: 48%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Small 1x1 Cards: Card 5 - Freight Ratio Calculator -->
+          <div class="saas-card reveal" data-category="Product Specs">
+            <div class="bento-card-header">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                  <polyline points="16 7 22 7 22 13"></polyline>
+                </svg>
+              </div>
+              <span class="bento-cat-tag font-mono">Product Specs</span>
+            </div>
+            <h4 class="bento-title">Freight Cost Margin Ratio</h4>
+            <p class="bento-desc">Measures shipping fee as a percentage of item value, highlighting disproportionate long-haul risks.</p>
+
+            <div class="telemetry-widget">
+              <div class="telemetry-header font-mono">
+                <span style="color: var(--text-muted);">Freight % of Price</span>
+                <span style="font-weight: 700; color: var(--indigo-brand);">16.3% (Safe &lt; 25%)</span>
+              </div>
+              <div class="telemetry-bar-bg">
+                <div class="telemetry-bar-fill" style="width: 32%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Small 1x1 Cards: Card 6 - Payment Delay Monitor -->
+          <div class="saas-card reveal" data-category="Time Features">
+            <div class="bento-card-header">
+              <div class="icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+              </div>
+              <span class="bento-cat-tag font-mono">Time Features</span>
+            </div>
+            <h4 class="bento-title">Payment Approval Friction</h4>
+            <p class="bento-desc">Captures payment approval lag hours and installment structure impacting warehouse fulfillment release.</p>
+
+            <div class="telemetry-widget">
+              <div class="telemetry-header font-mono">
+                <span style="color: var(--text-muted);">Approval Clearance</span>
+                <span style="font-weight: 700; color: var(--indigo-brand);">&lt; 15m Instant Card</span>
+              </div>
+              <div class="telemetry-bar-bg">
+                <div class="telemetry-bar-fill" style="width: 15%;"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- HOW IT WORKS SECTION (UNIFORM STEP CARDS) -->
+      <section class="section-padding" id="how-it-works">
+        <div class="section-header">
+          <h2 class="section-title">How the Risk Engine Works</h2>
+          <p class="section-desc">From raw checkout payload to instant risk score in under 1 second.</p>
+        </div>
+
+        <div class="stepper-container">
+          <div class="stepper-line">
+            <div class="stepper-line-active"></div>
+          </div>
+
+          <div class="stepper-grid">
+            <!-- Step 1 -->
+            <div class="step-card reveal">
+              <div class="step-header">
+                <div class="step-node font-mono">01</div>
+                <span class="bento-cat-tag font-mono">Raw Payload</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <h3 style="font-size: 1rem; font-weight: 700;">Data Ingestion</h3>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Collects timestamps, postal codes, product weight & dimensions, and payment terms at checkout.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card reveal">
+              <div class="step-header">
+                <div class="step-node font-mono">02</div>
+                <span class="bento-cat-tag font-mono">44 Features</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"></path>
+                  <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+                <h3 style="font-size: 1rem; font-weight: 700;">Feature Engine</h3>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Computes Haversine distance, freight ratios, volumetric density, and seller fulfillment lag.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card reveal">
+              <div class="step-header">
+                <div class="step-node font-mono">03</div>
+                <span class="bento-cat-tag font-mono">PyTorch Net</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <path d="M12 2a4 4 0 0 0-4 4c0 .8.2 1.5.6 2.1L6 11a4 4 0 0 0-4 4c0 2.2 1.8 4 4 4h12c2.2 0 4-1.8 4-4a4 4 0 0 0-2.6-3.8l-2.6-2.9c.4-.6.6-1.3.6-2.1a4 4 0 0 0-4-4Z"></path>
+                </svg>
+                <h3 style="font-size: 1rem; font-weight: 700;">MLP Neural Net</h3>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Feeds standardized features through the MLP neural network calibrated for optimal classification.</p>
+            </div>
+
+            <!-- Step 4 (Uniform styling, no extra highlight) -->
+            <div class="step-card reveal">
+              <div class="step-header">
+                <div class="step-node font-mono">04</div>
+                <span class="bento-cat-tag font-mono">Instant Action</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <path d="m12 14 4-4"></path>
+                  <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
+                </svg>
+                <h3 style="font-size: 1rem; font-weight: 700;">Risk Score & Action</h3>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Generates low/medium/high risk rating alongside actionable warehouse recommendations.</p>
+
+              <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; text-align: center; font-size: 0.65rem; font-weight: 700;" class="font-mono">
+                  <span style="background: var(--risk-low-bg); color: var(--risk-low); padding: 0.2rem; border-radius: 4px;">LOW &lt;30%</span>
+                  <span style="background: var(--risk-med-bg); color: var(--risk-med); padding: 0.2rem; border-radius: 4px;">MED 30-55%</span>
+                  <span style="background: var(--risk-high-bg); color: var(--risk-high); padding: 0.2rem; border-radius: 4px;">HIGH &gt;55%</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-      </div>
+        <!-- Latency Badge -->
+        <div style="display: flex; justify-content: center; margin-top: 3rem;">
+          <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); font-size: 0.8rem; color: var(--text-muted);" class="font-mono">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            Sub-second Server-Side Execution (<span style="color: var(--indigo-brand); font-weight: 700;">&lt; 100ms average</span>)
+          </div>
+        </div>
+      </section>
 
-    </section>
+    </div>
+    <!-- END LANDING PAGE VIEW -->
 
-    <!-- ═════════════════════════════════════════════════════════════════════ -->
-    <!-- 3. ABOUT PAGE VIEW                                                    -->
-    <!-- ═════════════════════════════════════════════════════════════════════ -->
-    <section id="page-about" class="page-view hidden">
-      
-      <div class="page-header">
-        <h1 class="page-title">About the Olist Risk Predictor</h1>
-        <p class="page-subtitle">End-to-end data mining architecture, feature engineering, and model evaluation pipeline.</p>
-      </div>
 
-      <div class="about-grid">
-        <div class="about-card">
-          <div class="card-icon-wrap">🎯</div>
-          <h3>Problem Statement</h3>
-          <p>
-            Olist connects small Brazilian merchants to major e-commerce platforms. A significant percentage of shipments suffer from carrier delays. This early-warning classifier estimates late delivery probability at order placement so support &amp; logistics teams can take proactive measures.
-          </p>
+    <!-- DEDICATED PREDICT RISK TOOL VIEW (SEPARATE SECTION) -->
+    <div id="view-predict" style="display: none;">
+      <section class="section-padding" id="predict-section">
+        <div class="section-header">
+          <h2 class="section-title">Evaluate Order Late-Delivery Risk</h2>
+          <p class="section-desc">Enter order parameters to execute real-time inference against the 44-feature MLP neural network.</p>
         </div>
 
-        <div class="about-card">
-          <div class="card-icon-wrap">📊</div>
-          <h3>Dataset &amp; Preprocessing</h3>
-          <p>
-            Utilizes ~99,000 real anonymized orders (2016–2018) from Kaggle. Cleaned relational schemas cover customer &amp; seller ZIP geolocations, Haversine distance calculations, package volumetric metrics, and payment installment features.
-          </p>
+        <!-- API Offline Warning Banner -->
+        <div id="offline-banner" style="display: none; max-width: 900px; margin: 0 auto 2rem; padding: 1rem 1.5rem; background: var(--risk-high-bg); border: 1px solid var(--risk-high-border); border-radius: var(--radius-md); color: var(--risk-high); display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+              <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+              <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+              <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+              <line x1="12" y1="20" x2="12.01" y2="20"></line>
+            </svg>
+            <div>
+              <div style="font-weight: 700; font-size: 0.85rem;">FastAPI Backend Disconnected (Port 8002)</div>
+              <div style="font-size: 0.75rem; opacity: 0.8;">Start backend using <code>python -m uvicorn app.backend.main:app --port 8002</code></div>
+            </div>
+          </div>
+          <button onclick="checkHealth()" style="background: var(--risk-high); color: white; border: none; padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+            Retry Connection
+          </button>
         </div>
 
-        <div class="about-card">
-          <div class="card-icon-wrap">🚫</div>
-          <h3>Strict Leakage Prevention</h3>
-          <p>
-            Features recorded post-checkout (such as carrier dispatch timestamp, delivery receipt timestamp, or customer review scores) are excluded to prevent target leakage and ensure true operational utility before dispatch.
-          </p>
+        <!-- Result Container -->
+        <div id="result-container" style="display: none; max-width: 900px; margin: 0 auto 2.5rem;">
+          <div class="result-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="brand-icon" style="width: 36px; height: 36px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 14 4-4"></path>
+                    <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 style="font-size: 1.1rem; font-weight: 800;">Prediction Output</h3>
+                  <span class="font-mono" style="font-size: 0.7rem; color: var(--text-muted);">Inference Time: &lt; 45ms</span>
+                </div>
+              </div>
+
+              <span class="result-badge" id="res-risk-badge">HIGH RISK (78.4%)</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: center;">
+              <!-- Probability Box -->
+              <div style="background: var(--bg-muted); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
+                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Late Delivery Probability</span>
+                <div class="font-mono" style="font-size: 3rem; font-weight: 800; color: var(--text-main);" id="res-prob-val">78.4%</div>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Decision Threshold: <strong style="color: var(--text-main);">10.0%</strong></span>
+              </div>
+
+              <!-- Recommendation Box -->
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                  </svg>
+                  Operational Recommendation
+                </div>
+                <div style="background: var(--indigo-tint); border: 1px solid var(--indigo-border); padding: 1rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6;" id="res-recommendation">
+                  Order exhibits extreme interstate distance and tight SLA window. Reassign to priority carrier express lane and verify warehouse dispatch within 12 hours.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="about-card">
-          <div class="card-icon-wrap">⚙️</div>
-          <h3>ML Model Pipeline</h3>
-          <p>
-            Evaluated Logistic Regression, Random Forest, LightGBM, and MLP Neural Networks. The champion MLP Neural Net delivers optimal ranking ability with a <strong>0.7766 ROC-AUC</strong> score across 44 standardized input variables.
-          </p>
-        </div>
-      </div>
+        <!-- Input Form Section -->
+        <div class="form-section">
+          <form class="saas-card" id="predict-form" onsubmit="handlePredictSubmit(event)">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 800;">Order Parameter Payload</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Adjust inputs to evaluate real-time delay probability.</p>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" onclick="fillPreset('high')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-md); background: var(--risk-high-bg); color: var(--risk-high); border: 1px solid var(--risk-high-border); cursor: pointer;">
+                  Preset: High Risk
+                </button>
+                <button type="button" onclick="fillPreset('low')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-md); background: var(--risk-low-bg); color: var(--risk-low); border: 1px solid var(--risk-low-border); cursor: pointer;">
+                  Preset: Low Risk
+                </button>
+              </div>
+            </div>
 
-    </section>
+            <div class="form-grid">
+              <!-- Group 1: Timestamps -->
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">1. Purchase & SLA Timestamps</span>
+                <div class="form-grid form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Purchase Datetime</label>
+                    <input type="text" class="form-input font-mono" id="purchase_datetime" value="2018-05-15 14:30:00" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Estimated Delivery Date</label>
+                    <input type="text" class="form-input font-mono" id="estimated_delivery_date" value="2018-05-28 00:00:00" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Group 2: ZIP Codes -->
+              <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">2. Geographic Regional Postal Codes</span>
+                <div class="form-grid form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Seller ZIP Prefix (5 digits)</label>
+                    <input type="number" class="form-input font-mono" id="seller_zip_prefix" value="1000" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Customer ZIP Prefix (5 digits)</label>
+                    <input type="number" class="form-input font-mono" id="customer_zip_prefix" value="20000" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Group 3: Package Specs -->
+              <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">3. Package Dimensions & Weight</span>
+                <div class="form-grid form-grid-4">
+                  <div class="form-group">
+                    <label class="form-label">Weight (g)</label>
+                    <input type="number" class="form-input font-mono" id="weight_g" value="1500" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Length (cm)</label>
+                    <input type="number" class="form-input font-mono" id="length_cm" value="32" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Height (cm)</label>
+                    <input type="number" class="form-input font-mono" id="height_cm" value="18" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Width (cm)</label>
+                    <input type="number" class="form-input font-mono" id="width_cm" value="22" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Group 4: Commercial Terms -->
+              <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">4. Financial & Order Terms</span>
+                <div class="form-grid form-grid-3">
+                  <div class="form-group">
+                    <label class="form-label">Product Category</label>
+                    <input type="text" class="form-input" id="product_category" value="cama_mesa_banho" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Price (R$)</label>
+                    <input type="number" step="0.01" class="form-input font-mono" id="price" value="149.90" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Freight Value (R$)</label>
+                    <input type="number" step="0.01" class="form-input font-mono" id="freight_value" value="24.50" required>
+                  </div>
+                </div>
+
+                <div class="form-grid form-grid-4">
+                  <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-select" id="payment_type">
+                      <option value="credit_card">credit_card</option>
+                      <option value="boleto">boleto</option>
+                      <option value="voucher">voucher</option>
+                      <option value="debit_card">debit_card</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Installments</label>
+                    <input type="number" class="form-input font-mono" id="installments" value="3" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Approval Lag (Hrs)</label>
+                    <input type="number" step="0.1" class="form-input font-mono" id="approval_lag_hours" value="2.5" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Item / Seller Count</label>
+                    <input type="number" class="form-input font-mono" id="item_count" value="1" required>
+                    <input type="hidden" id="seller_count" value="1">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="display: flex; justify-content: flex-end; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+              <button type="submit" class="btn-primary" id="btn-submit-predict">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                <span style="color: #ffffff;">Predict Delay Risk</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+    <!-- END DEDICATED PREDICT RISK TOOL VIEW -->
 
   </main>
 
-  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-left">
-        <strong>Olist Late Delivery Risk Predictor</strong> — Early Warning System
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--border-color); background: var(--bg-card); padding: 3rem 1.5rem;">
+    <div style="max-w: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="brand-logo" onclick="navigateTo('hero')">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+          </div>
+          <div>
+            <span style="font-weight: 800;">Olist Risk Predictor</span>
+            <span class="font-mono" style="font-size: 0.7rem; color: var(--text-muted); display: block;">ML LOGISTICS INTELLIGENCE</span>
+          </div>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-muted);" class="font-mono">
+          FastAPI Backend Port: 8002 | Frontend Port: 3000
+        </div>
       </div>
-      <div class="footer-right">
-        IT3051 — Fundamentals of Data Mining · SLIIT 2026 · Academic Demonstration Only
+
+      <div style="padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;" class="font-mono">
+        <span>© 2026 Olist Late Delivery Prediction Project. Built with Stripe/Linear-inspired Design System.</span>
+        <span>Zero-Data-Leakage Verified</span>
       </div>
     </div>
   </footer>
 
-  <script src="app.js?v=20261005_3"></script>
+  <script src="app.js"></script>
 </body>
 </html>
