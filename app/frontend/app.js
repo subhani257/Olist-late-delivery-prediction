@@ -165,19 +165,19 @@ function filterBento(category, btnEl) {
 function fillPreset(type) {
   if (type === 'high') {
     document.getElementById('purchase_datetime').value = '2018-05-10 10:00:00';
-    document.getElementById('estimated_delivery_date').value = '2018-05-18 00:00:00';
+    document.getElementById('estimated_delivery_date').value = '2018-05-13 00:00:00';
     document.getElementById('seller_zip_prefix').value = '1000';
     document.getElementById('customer_zip_prefix').value = '69000'; // Manaus AM
-    document.getElementById('weight_g').value = '12500';
-    document.getElementById('length_cm').value = '90';
-    document.getElementById('height_cm').value = '45';
-    document.getElementById('width_cm').value = '60';
+    document.getElementById('weight_g').value = '15000';
+    document.getElementById('length_cm').value = '80';
+    document.getElementById('height_cm').value = '40';
+    document.getElementById('width_cm').value = '50';
     document.getElementById('product_category').value = 'moveis_decoracao';
-    document.getElementById('price').value = '320.00';
-    document.getElementById('freight_value').value = '85.00';
+    document.getElementById('price').value = '50.00';
+    document.getElementById('freight_value').value = '120.00';
     document.getElementById('payment_type').value = 'boleto';
     document.getElementById('installments').value = '1';
-    document.getElementById('approval_lag_hours').value = '28.0';
+    document.getElementById('approval_lag_hours').value = '48.0';
     document.getElementById('item_count').value = '2';
   } else {
     document.getElementById('purchase_datetime').value = '2018-05-15 14:30:00';
@@ -197,6 +197,64 @@ function fillPreset(type) {
     document.getElementById('item_count').value = '1';
   }
 }
+window.fillPreset = fillPreset;
+
+// 6b. Clear Form Function
+function clearForm() {
+  const form = document.getElementById('predict-form');
+  if (form) {
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach((input) => {
+      input.value = '';
+      input.setAttribute('value', '');
+      if (input.tagName.toLowerCase() === 'select') {
+        input.selectedIndex = 0;
+      }
+    });
+  }
+
+  const fields = [
+    'purchase_datetime',
+    'estimated_delivery_date',
+    'seller_zip_prefix',
+    'customer_zip_prefix',
+    'weight_g',
+    'length_cm',
+    'height_cm',
+    'width_cm',
+    'product_category',
+    'price',
+    'freight_value',
+    'installments',
+    'approval_lag_hours',
+    'item_count'
+  ];
+
+  fields.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.value = '';
+      el.setAttribute('value', '');
+    }
+  });
+
+  const paymentSelect = document.getElementById('payment_type');
+  if (paymentSelect) paymentSelect.selectedIndex = 0;
+
+  const resultContainer = document.getElementById('result-container');
+  if (resultContainer) {
+    resultContainer.style.display = 'none';
+  }
+}
+
+window.clearForm = clearForm;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const resetBtn = document.getElementById('btn-reset-form');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', clearForm);
+  }
+});
 
 // 7. Form Submission Handler
 async function handlePredictSubmit(event) {
@@ -207,23 +265,37 @@ async function handlePredictSubmit(event) {
     submitBtn.innerHTML = `<span>Executing Inference...</span>`;
   }
 
+  const getItemVal = (id, defaultVal) => {
+    const el = document.getElementById(id);
+    if (!el || el.value === '' || el.value === null || el.value === undefined) return defaultVal;
+    return el.value;
+  };
+
+  const getNumVal = (id, defaultVal, minVal = null) => {
+    const val = getItemVal(id, defaultVal);
+    const num = Number(val);
+    if (isNaN(num)) return defaultVal;
+    if (minVal !== null && num < minVal) return minVal;
+    return num;
+  };
+
   const payload = {
-    purchase_datetime: document.getElementById('purchase_datetime').value,
-    estimated_delivery_date: document.getElementById('estimated_delivery_date').value,
-    seller_zip_prefix: Number(document.getElementById('seller_zip_prefix').value),
-    customer_zip_prefix: Number(document.getElementById('customer_zip_prefix').value),
-    weight_g: Number(document.getElementById('weight_g').value),
-    length_cm: Number(document.getElementById('length_cm').value),
-    height_cm: Number(document.getElementById('height_cm').value),
-    width_cm: Number(document.getElementById('width_cm').value),
-    product_category: document.getElementById('product_category').value,
-    price: Number(document.getElementById('price').value),
-    freight_value: Number(document.getElementById('freight_value').value),
-    payment_type: document.getElementById('payment_type').value,
-    installments: Number(document.getElementById('installments').value),
-    approval_lag_hours: Number(document.getElementById('approval_lag_hours').value),
-    item_count: Number(document.getElementById('item_count').value),
-    seller_count: Number(document.getElementById('seller_count').value),
+    purchase_datetime: String(getItemVal('purchase_datetime', '2018-05-15 14:30:00')).trim() || '2018-05-15 14:30:00',
+    estimated_delivery_date: String(getItemVal('estimated_delivery_date', '2018-05-28 00:00:00')).trim() || '2018-05-28 00:00:00',
+    seller_zip_prefix: Math.min(Math.max(getNumVal('seller_zip_prefix', 1000, 1), 1), 99999),
+    customer_zip_prefix: Math.min(Math.max(getNumVal('customer_zip_prefix', 20000, 1), 1), 99999),
+    weight_g: getNumVal('weight_g', 1500, 0),
+    length_cm: getNumVal('length_cm', 32, 0.1),
+    height_cm: getNumVal('height_cm', 18, 0.1),
+    width_cm: getNumVal('width_cm', 22, 0.1),
+    product_category: String(getItemVal('product_category', 'cama_mesa_banho')).trim() || 'cama_mesa_banho',
+    price: getNumVal('price', 149.90, 0.01),
+    freight_value: getNumVal('freight_value', 24.50, 0),
+    payment_type: String(getItemVal('payment_type', 'credit_card')).toLowerCase(),
+    installments: Math.min(Math.max(getNumVal('installments', 3, 0), 0), 24),
+    approval_lag_hours: getNumVal('approval_lag_hours', 2.5, 0),
+    item_count: getNumVal('item_count', 1, 1),
+    seller_count: getNumVal('seller_count', 1, 1),
   };
 
   try {
@@ -234,11 +306,13 @@ async function handlePredictSubmit(event) {
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP ${res.status}: Prediction failed`);
+      const errorJson = await res.json().catch(() => ({}));
+      const detailMsg = errorJson.detail ? JSON.stringify(errorJson.detail) : `HTTP ${res.status}`;
+      throw new Error(`Validation Error (${detailMsg})`);
     }
 
     const data = await res.json();
-    renderPredictionResult(data);
+    renderPredictionResult(data, payload);
   } catch (err) {
     alert(`Prediction Error: ${err.message}. Ensure backend is running at http://127.0.0.1:8002`);
   } finally {
@@ -250,8 +324,166 @@ async function handlePredictSubmit(event) {
   }
 }
 
+// 7b. Dynamic Recommendation Generator
+function generateDynamicRecommendation(data, payload) {
+  if (data.recommendation && data.recommendation_custom) return data.recommendation;
+
+  const riskText = data.risk_label || (data.probability > 0.55 ? 'High' : data.probability > 0.3 ? 'Medium' : 'Low');
+
+  if (riskText === 'Low') {
+    return `
+      <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+        <div style="font-weight: 800; color: var(--risk-low, #10b981); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.1rem;">🟢</span> LOW RISK — STANDARD PROCESS
+        </div>
+        <div style="background: var(--risk-low-bg, rgba(16, 185, 129, 0.12)); padding: 0.9rem 1.1rem; border-radius: 10px; border-left: 4px solid var(--risk-low, #10b981); font-size: 0.9rem; color: var(--text-main, #f8fafc); line-height: 1.6; border: 1px solid rgba(16, 185, 129, 0.3);">
+          Standard economic fulfillment pipeline approved (Prob: ${(data.probability * 100).toFixed(1)}%). Zero extra intervention costs required.
+        </div>
+      </div>
+    `;
+  }
+
+  // Calculate turnaround days promised
+  let promisedDays = 14;
+  if (payload && payload.purchase_datetime && payload.estimated_delivery_date) {
+    const pDt = new Date(payload.purchase_datetime);
+    const eDt = new Date(payload.estimated_delivery_date);
+    const diffTime = eDt - pDt;
+    if (!isNaN(diffTime)) {
+      promisedDays = diffTime / (1000 * 60 * 60 * 24);
+    }
+  }
+
+  const custZip = payload ? Number(payload.customer_zip_prefix || 0) : 0;
+  const sellZip = payload ? Number(payload.seller_zip_prefix || 0) : 0;
+  const approvalLag = payload ? Number(payload.approval_lag_hours || 0) : 0;
+  const weightKg = payload ? Number(payload.weight_g || 0) / 1000 : 0;
+  const price = payload ? Number(payload.price || 1) : 1;
+  const freight = payload ? Number(payload.freight_value || 0) : 0;
+  const freightRatio = freight / Math.max(price, 1);
+
+  // Identify primary risk factors
+  const isFarNorthOrNortheast = (custZip >= 59000 && custZip <= 69999) || (custZip >= 60000 && custZip <= 65999) || (custZip >= 76000 && custZip <= 79999);
+  const isCrossStateZip = Math.abs(custZip - sellZip) > 10000;
+  const isTightSLA = promisedDays > 0 && promisedDays <= 7;
+  const isHighLag = approvalLag >= 24;
+  const isHeavyOrFreightRatio = weightKg >= 10 || freightRatio >= 0.5;
+
+  if (riskText === 'High') {
+    const factors = [];
+    const actions = [];
+
+    if (isTightSLA) {
+      factors.push(`Unrealistic <strong style="color: var(--accent-secondary, #06b6d4);">${promisedDays.toFixed(0)}-day promised SLA window</strong> set at checkout`);
+      actions.push('Adjust checkout delivery promise date to a realistic timeframe');
+    }
+    if (isFarNorthOrNortheast || isCrossStateZip) {
+      factors.push(`Extended long-haul distance to ZIP prefix <strong style="color: var(--accent-secondary, #06b6d4);">${custZip}</strong>`);
+      actions.push('Reassign parcel to express air-freight carrier lane');
+    }
+    if (isHighLag) {
+      factors.push(`High seller approval lag (<strong style="color: var(--accent-secondary, #06b6d4);">${approvalLag}h delay</strong> prior to warehouse release)`);
+      actions.push('Flag seller support team to expedite warehouse dispatch within 4 hours');
+    }
+    if (isHeavyOrFreightRatio) {
+      factors.push(`Heavy package weight (<strong style="color: var(--accent-secondary, #06b6d4);">${weightKg.toFixed(1)} kg</strong>) and high freight ratio`);
+      actions.push('Partner with specialized heavy-cargo logistics handler');
+    }
+
+    if (factors.length === 0) {
+      factors.push('Combined geographic distance and logistics turnaround complexity');
+      actions.push('Reassign to express priority carrier and accelerate warehouse dispatch');
+    }
+
+    actions.push('Send proactive SMS delay alert to customer prior to shipping');
+
+    const factorsHtml = factors.map((f) => `<li style="margin-bottom: 0.4rem; color: var(--text-main, #f8fafc);">${f}</li>`).join('');
+    const actionsHtml = actions.map((a) => `<li style="margin-bottom: 0.4rem; color: var(--text-main, #f8fafc);">${a}</li>`).join('');
+
+    return `
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div style="font-weight: 800; color: var(--risk-high, #ef4444); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.1rem;">🔴</span> HIGH RISK ALERT — IMMEDIATE ACTION REQUIRED
+        </div>
+        
+        <div style="background: var(--bg-muted, rgba(15, 23, 42, 0.6)); padding: 0.9rem 1.15rem; border-radius: 10px; border-left: 4px solid var(--risk-high, #ef4444); border: 1px solid var(--border-color, rgba(255,255,255,0.08));">
+          <div style="font-weight: 700; font-size: 0.8rem; color: var(--text-muted, #94a3b8); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">
+            🔍 Primary Delay Drivers:
+          </div>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
+            ${factorsHtml}
+          </ul>
+        </div>
+
+        <div style="background: var(--risk-high-bg, rgba(239, 68, 68, 0.12)); padding: 0.9rem 1.15rem; border-radius: 10px; border-left: 4px solid var(--risk-high, #ef4444); border: 1px solid var(--risk-high-border, rgba(239, 68, 68, 0.3));">
+          <div style="font-weight: 800; font-size: 0.82rem; color: var(--risk-high, #ef4444); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">
+            ⚡ Required Operational Actions:
+          </div>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
+            ${actionsHtml}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+
+  if (riskText === 'Medium') {
+    const factors = [];
+    const actions = [];
+
+    if (isTightSLA) {
+      factors.push(`Tight <strong style="color: var(--accent-secondary, #06b6d4);">${promisedDays.toFixed(0)}-day turnaround window</strong>`);
+      actions.push('Flag in warehouse dispatch queue for priority 24-hour packing');
+    }
+    if (isCrossStateZip || isFarNorthOrNortheast) {
+      factors.push(`Interstate shipping route to ZIP prefix <strong style="color: var(--accent-secondary, #06b6d4);">${custZip}</strong>`);
+      actions.push('Monitor carrier pickup status closely within 12 hours');
+    }
+    if (isHighLag) {
+      factors.push(`Seller packing lag (<strong style="color: var(--accent-secondary, #06b6d4);">${approvalLag}h delay</strong>)`);
+      actions.push('Issue alert to seller to confirm warehouse dispatch');
+    }
+
+    if (factors.length === 0) {
+      factors.push('Moderate logistics routing complexity');
+      actions.push('Monitor carrier pickup times and verify warehouse dispatch queue');
+    }
+
+    const factorsHtml = factors.map((f) => `<li style="margin-bottom: 0.4rem; color: var(--text-main, #f8fafc);">${f}</li>`).join('');
+    const actionsHtml = actions.map((a) => `<li style="margin-bottom: 0.4rem; color: var(--text-main, #f8fafc);">${a}</li>`).join('');
+
+    return `
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div style="font-weight: 800; color: var(--risk-med, #f59e0b); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.1rem;">🟡</span> MEDIUM RISK WARNING — WATCHLIST MONITORING
+        </div>
+        
+        <div style="background: var(--bg-muted, rgba(15, 23, 42, 0.6)); padding: 0.9rem 1.15rem; border-radius: 10px; border-left: 4px solid var(--risk-med, #f59e0b); border: 1px solid var(--border-color, rgba(255,255,255,0.08));">
+          <div style="font-weight: 700; font-size: 0.8rem; color: var(--text-muted, #94a3b8); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">
+            🔍 Moderate Risk Factors:
+          </div>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
+            ${factorsHtml}
+          </ul>
+        </div>
+
+        <div style="background: var(--risk-med-bg, rgba(245, 158, 11, 0.12)); padding: 0.9rem 1.15rem; border-radius: 10px; border-left: 4px solid var(--risk-med, #f59e0b); border: 1px solid var(--risk-med-border, rgba(245, 158, 11, 0.3));">
+          <div style="font-weight: 800; font-size: 0.82rem; color: var(--risk-med, #f59e0b); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">
+            📋 Mandated Operational Actions:
+          </div>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
+            ${actionsHtml}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+
+  return 'Standard automated fulfillment pipeline approved.';
+}
+
 // 8. Render Prediction Result & Scroll Top
-function renderPredictionResult(data) {
+function renderPredictionResult(data, payload) {
   const container = document.getElementById('result-container');
   const badge = document.getElementById('res-risk-badge');
   const probVal = document.getElementById('res-prob-val');
@@ -265,15 +497,20 @@ function renderPredictionResult(data) {
   if (probVal) probVal.innerText = `${probPct}%`;
   
   if (recommendation) {
-    if (data.recommendation) {
-      recommendation.innerText = data.recommendation;
-    } else if (riskText === 'High') {
-      recommendation.innerText = 'Order exhibits high delay risk due to extended shipping distance and freight ratio. Reassign to express priority carrier and accelerate warehouse dispatch.';
+    recommendation.innerHTML = generateDynamicRecommendation(data, payload);
+
+    if (riskText === 'High') {
+      recommendation.style.background = 'rgba(239, 68, 68, 0.06)';
+      recommendation.style.border = '1px solid rgba(239, 68, 68, 0.3)';
     } else if (riskText === 'Medium') {
-      recommendation.innerText = 'Moderate delay risk identified. Flag for priority processing and monitor carrier pickup times closely.';
+      recommendation.style.background = 'rgba(245, 158, 11, 0.06)';
+      recommendation.style.border = '1px solid rgba(245, 158, 11, 0.3)';
     } else {
-      recommendation.innerText = 'Low delay risk. Standard automated fulfillment pipeline approved.';
+      recommendation.style.background = 'rgba(16, 185, 129, 0.06)';
+      recommendation.style.border = '1px solid rgba(16, 185, 129, 0.3)';
     }
+    recommendation.style.padding = '1.25rem';
+    recommendation.style.borderRadius = '14px';
   }
 
   if (badge) {

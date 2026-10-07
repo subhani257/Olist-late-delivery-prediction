@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Olist Risk Predictor — E-Commerce Logistics Intelligence</title>
-  <meta name="description" content="ML-powered late-delivery risk prediction system for Olist Brazilian e-commerce orders using 44 features and MLP neural network.">
+  <meta name="description"
+    content="ML-powered late-delivery risk prediction system for Olist Brazilian e-commerce orders using 44 features and MLP neural network.">
   <link rel="stylesheet" href="style.css">
   <!-- Lucide Icons Library CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
 
   <!-- Sticky Modern Navbar -->
@@ -16,7 +19,8 @@
     <div class="nav-container">
       <div class="brand-logo" onclick="navigateTo('hero')">
         <div class="brand-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
             <polyline points="16 7 22 7 22 13"></polyline>
           </svg>
@@ -48,7 +52,8 @@
         </div>
 
         <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle Theme" onclick="toggleTheme()">
-          <svg id="theme-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg id="theme-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="4"></circle>
             <path d="M12 2v2"></path>
             <path d="M12 20v2"></path>
@@ -80,13 +85,15 @@
             </h1>
 
             <p class="hero-desc">
-              Real-time ML risk scoring trained on 99,000+ Brazilian e-commerce orders. Catch shipping bottlenecks, optimize fulfillment lead-times, and protect customer satisfaction.
+              Real-time ML risk scoring trained on 99,000+ Brazilian e-commerce orders. Catch shipping bottlenecks,
+              optimize fulfillment lead-times, and protect customer satisfaction.
             </p>
 
             <div class="cta-group">
               <button class="btn-primary" onclick="navigateTo('predict')">
                 <span style="color: #ffffff;">Run Risk Prediction</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
@@ -96,16 +103,19 @@
               </button>
             </div>
 
-            <div style="display: flex; gap: 1.5rem; margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);" class="font-mono">
+            <div style="display: flex; gap: 1.5rem; margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);"
+              class="font-mono">
               <span style="display: flex; align-items: center; gap: 0.4rem;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
                 0.7766 ROC-AUC
               </span>
               <span style="display: flex; align-items: center; gap: 0.4rem;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                   <path d="m9 12 2 2 4-4"></path>
                 </svg>
@@ -120,13 +130,15 @@
               <div class="preview-header">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                   <div class="icon-box">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
                   </div>
                   <div>
                     <div style="font-weight: 700; font-size: 0.9rem;">Live Order Risk Monitor</div>
-                    <div style="font-size: 0.7rem; color: var(--text-muted);" class="font-mono">Order #OLIST-8842-BR</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);" class="font-mono">Order #OLIST-8842-BR
+                    </div>
                   </div>
                 </div>
                 <span class="bento-cat-tag font-mono">SIMULATION</span>
@@ -137,7 +149,8 @@
                 <div class="arc-gauge">
                   <svg viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="40" stroke="var(--border-color)" stroke-width="8" fill="none" />
-                    <circle id="hero-gauge-circle" cx="50" cy="50" r="40" stroke="var(--risk-high)" stroke-width="8" fill="none" stroke-dasharray="251.2" stroke-dashoffset="55" stroke-linecap="round" />
+                    <circle id="hero-gauge-circle" cx="50" cy="50" r="40" stroke="var(--risk-high)" stroke-width="8"
+                      fill="none" stroke-dasharray="251.2" stroke-dashoffset="55" stroke-linecap="round" />
                   </svg>
                   <div class="arc-gauge-text">
                     <span class="arc-gauge-val font-mono" id="hero-risk-pct">78%</span>
@@ -158,7 +171,9 @@
                     </div>
                     <div class="route-dot" style="background: var(--text-muted);"></div>
                   </div>
-                  <div style="font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between;" class="font-mono">
+                  <div
+                    style="font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between;"
+                    class="font-mono">
                     <span>SP (01000)</span>
                     <span>RJ (20000)</span>
                   </div>
@@ -167,13 +182,15 @@
 
               <!-- 3 Top Risk Factors -->
               <div class="risk-factor-list">
-                <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;" class="font-mono">
+                <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;"
+                  class="font-mono">
                   Top Risk Factor Contributions
                 </div>
 
                 <div class="risk-factor-item high">
                   <span style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
                       <line x1="12" y1="9" x2="12" y2="13"></line>
                       <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -185,7 +202,8 @@
 
                 <div class="risk-factor-item med">
                   <span style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
@@ -196,8 +214,11 @@
 
                 <div class="risk-factor-item info">
                   <span style="display: flex; align-items: center; gap: 0.5rem;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path
+                        d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                      </path>
                       <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                       <line x1="12" y1="22.08" x2="12" y2="12"></line>
                     </svg>
@@ -209,11 +230,14 @@
 
               <!-- Interactive Distance Slider Simulator -->
               <div style="display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.25rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted);" class="font-mono">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted);"
+                  class="font-mono">
                   <span>Simulate Distance</span>
                   <span id="slider-dist-val">1,420 km</span>
                 </div>
-                <input type="range" min="200" max="2800" value="1420" id="hero-dist-slider" oninput="updateHeroSim(this.value)" style="width: 100%; accent-color: var(--indigo-brand); cursor: pointer;">
+                <input type="range" min="200" max="2800" value="1420" id="hero-dist-slider"
+                  oninput="updateHeroSim(this.value)"
+                  style="width: 100%; accent-color: var(--indigo-brand); cursor: pointer;">
               </div>
             </div>
           </div>
@@ -251,13 +275,17 @@
             </h2>
 
             <p class="section-desc" style="text-align: left;">
-              Standard logistics tools rely on reactive tracking updates. The Olist Risk Predictor transforms raw checkout metadata into proactive delay forecasting. By leveraging geographic Haversine distance, carrier volumetric ratios, and seller fulfillment lag, we empower operations managers to intervene before delays happen.
+              Standard logistics tools rely on reactive tracking updates. The Olist Risk Predictor transforms raw
+              checkout metadata into proactive delay forecasting. By leveraging geographic Haversine distance, carrier
+              volumetric ratios, and seller fulfillment lag, we empower operations managers to intervene before delays
+              happen.
             </p>
 
             <div>
               <button class="btn-secondary" onclick="navigateTo('how-it-works')">
                 <span>View the 4-step pipeline</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
@@ -268,16 +296,20 @@
           <!-- Right Column: Compact Visual Data Flow Diagram -->
           <div class="reveal">
             <div class="saas-card" style="border-color: var(--indigo-border);">
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
-                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">DATA FLOW PIPELINE</span>
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">DATA
+                  FLOW PIPELINE</span>
                 <span class="verified-badge font-mono">ACTIVE INFERENCE</span>
               </div>
 
               <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
                 <!-- Node 1 -->
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-                  <div class="icon-box" style="background: var(--bg-muted); color: var(--text-muted); border-color: var(--border-color);">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <div class="icon-box"
+                    style="background: var(--bg-muted); color: var(--text-muted); border-color: var(--border-color);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                       <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                       <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
@@ -290,7 +322,8 @@
                 <!-- Node 2 -->
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
                   <div class="icon-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                       <polyline points="14 2 14 8 20 8"></polyline>
                       <path d="m9 15 2 2 4-4"></path>
@@ -302,8 +335,10 @@
 
                 <!-- Node 3 -->
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-                  <div class="icon-box" style="background: var(--indigo-brand); color: #ffffff; border-color: var(--indigo-brand);">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <div class="icon-box"
+                    style="background: var(--indigo-brand); color: #ffffff; border-color: var(--indigo-brand);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <rect x="4" y="4" width="16" height="16" rx="2"></rect>
                       <rect x="9" y="9" width="6" height="6"></rect>
                       <line x1="9" y1="1" x2="9" y2="4"></line>
@@ -322,8 +357,10 @@
 
                 <!-- Node 4 -->
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-                  <div class="icon-box" style="background: rgba(16, 185, 129, 0.15); color: var(--risk-low); border-color: rgba(16, 185, 129, 0.4);">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <div class="icon-box"
+                    style="background: rgba(16, 185, 129, 0.15); color: var(--risk-low); border-color: rgba(16, 185, 129, 0.4);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <path d="m12 14 4-4"></path>
                       <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
                     </svg>
@@ -346,21 +383,27 @@
             <!-- Problem -->
             <div class="saas-card reveal">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div class="icon-box" style="background: var(--risk-med-bg); color: var(--risk-med); border-color: var(--risk-med-border);">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="icon-box"
+                  style="background: var(--risk-med-bg); color: var(--risk-med); border-color: var(--risk-med-border);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
                     <line x1="12" y1="9" x2="12" y2="13"></line>
                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                   </svg>
                 </div>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">01</span>
+                <span class="font-mono"
+                  style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">01</span>
               </div>
               <div>
                 <h4 style="font-size: 1.1rem; font-weight: 700;">The Challenge</h4>
-                <div class="font-mono" style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Post-Dispatch Blindspot</div>
+                <div class="font-mono"
+                  style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">
+                  Post-Dispatch Blindspot</div>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
-                E-commerce logistics suffer from hidden late delivery penalties. By the time a carrier updates tracking, delays have already angered customers and increased support costs.
+                E-commerce logistics suffer from hidden late delivery penalties. By the time a carrier updates tracking,
+                delays have already angered customers and increased support costs.
               </p>
             </div>
 
@@ -368,47 +411,61 @@
             <div class="saas-card reveal">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="icon-box">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                      d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5">
+                    </path>
                     <path d="M9 18h6"></path>
                     <path d="M10 22h4"></path>
                   </svg>
                 </div>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">02</span>
+                <span class="font-mono"
+                  style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">02</span>
               </div>
               <div>
                 <h4 style="font-size: 1.1rem; font-weight: 700;">Our Solution</h4>
-                <div class="font-mono" style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Pre-Dispatch Neural Scoring</div>
+                <div class="font-mono"
+                  style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">
+                  Pre-Dispatch Neural Scoring</div>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
-                Our Multi-Layer Perceptron (MLP) model analyzes purchase parameters at order placement, calculating delay risk before packages even leave seller warehouses.
+                Our Multi-Layer Perceptron (MLP) model analyzes purchase parameters at order placement, calculating
+                delay risk before packages even leave seller warehouses.
               </p>
             </div>
 
             <!-- Guarantee -->
             <div class="saas-card guarantee-card reveal">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div class="icon-box" style="background: var(--risk-low-bg); color: var(--risk-low); border-color: var(--risk-low-border);">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="icon-box"
+                  style="background: var(--risk-low-bg); color: var(--risk-low); border-color: var(--risk-low-border);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     <path d="m9 12 2 2 4-4"></path>
                   </svg>
                 </div>
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">03</span>
+                <span class="font-mono"
+                  style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">03</span>
               </div>
               <div>
                 <div class="verified-badge font-mono" style="margin-bottom: 0.5rem;">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                   </svg>
                   Verified Zero-Data-Leakage
                 </div>
                 <h4 style="font-size: 1.1rem; font-weight: 700;">The Guarantee</h4>
-                <div class="font-mono" style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Strict Leakage-Free Design</div>
+                <div class="font-mono"
+                  style="font-size: 0.75rem; color: var(--indigo-brand); font-weight: 600; margin-top: 0.15rem;">Strict
+                  Leakage-Free Design</div>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
-                Trained exclusively on zero-future-leakage attributes. We exclude post-dispatch tracking events so predictions are mathematically valid at checkout.
+                Trained exclusively on zero-future-leakage attributes. We exclude post-dispatch tracking events so
+                predictions are mathematically valid at checkout.
               </p>
             </div>
           </div>
@@ -421,7 +478,8 @@
         <div class="section-header">
           <h2 class="section-title">Architected for High-Precision Late-Delivery Forecasting</h2>
           <p class="section-desc">
-            44 multimodal features computed server-side across geospatial distance, fulfillment lag, volumetric parcel geometry, and financial risk dimensions.
+            44 multimodal features computed server-side across geospatial distance, fulfillment lag, volumetric parcel
+            geometry, and financial risk dimensions.
           </p>
         </div>
 
@@ -436,12 +494,13 @@
 
         <!-- Bento Grid -->
         <div class="bento-grid" id="bento-container">
-          
+
           <!-- Card 1: MLP Neural Classifier -->
           <div class="saas-card reveal" data-category="AI Model">
             <div class="bento-card-header">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <rect x="4" y="4" width="16" height="16" rx="2"></rect>
                   <rect x="9" y="9" width="6" height="6"></rect>
                   <line x1="9" y1="1" x2="9" y2="4"></line>
@@ -457,7 +516,8 @@
               <span class="bento-cat-tag font-mono">AI Model</span>
             </div>
             <h4 class="bento-title">Multi-Layer Perceptron (MLP)</h4>
-            <p class="bento-desc">PyTorch neural classifier calibrated on 99,441 records to predict delay risk before dispatch.</p>
+            <p class="bento-desc">PyTorch neural classifier calibrated on 99,441 records to predict delay risk before
+              dispatch.</p>
 
             <div class="telemetry-widget">
               <div class="telemetry-header font-mono">
@@ -474,16 +534,19 @@
           <div class="saas-card reveal" data-category="Distance & Geo">
             <div class="bento-card-header">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="2" y1="12" x2="22" y2="12"></line>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                  </path>
                 </svg>
               </div>
               <span class="bento-cat-tag font-mono">Distance & Geo</span>
             </div>
             <h4 class="bento-title">Haversine Geospatial Engine</h4>
-            <p class="bento-desc">Converts Brazilian CEP postal codes to geodesic coordinates and calculates interstate tariff friction.</p>
+            <p class="bento-desc">Converts Brazilian CEP postal codes to geodesic coordinates and calculates interstate
+              tariff friction.</p>
 
             <div class="telemetry-widget">
               <div class="telemetry-header font-mono">
@@ -500,7 +563,8 @@
           <div class="saas-card reveal" data-category="Time Features">
             <div class="bento-card-header">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
@@ -508,8 +572,9 @@
               <span class="bento-cat-tag font-mono">Time Features</span>
             </div>
             <h4 class="bento-title">Lead-Time & SLA Buffer</h4>
-            <p class="bento-desc">Quantifies available carrier buffer days between order approval and promised SLA delivery date.</p>
-            
+            <p class="bento-desc">Quantifies available carrier buffer days between order approval and promised SLA
+              delivery date.</p>
+
             <div class="telemetry-widget">
               <div class="telemetry-header font-mono">
                 <span style="color: var(--text-muted);">Seller Prep Buffer</span>
@@ -525,8 +590,11 @@
           <div class="saas-card reveal" data-category="Product Specs">
             <div class="bento-card-header">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                  </path>
                   <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                   <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
@@ -534,7 +602,8 @@
               <span class="bento-cat-tag font-mono">Product Specs</span>
             </div>
             <h4 class="bento-title">Volumetric Density Engine</h4>
-            <p class="bento-desc">Calculates 3D package dimensions (cm³) and deadweight-to-volume ratio to identify bulky cargo bottlenecks.</p>
+            <p class="bento-desc">Calculates 3D package dimensions (cm³) and deadweight-to-volume ratio to identify
+              bulky cargo bottlenecks.</p>
 
             <div class="telemetry-widget">
               <div class="telemetry-header font-mono">
@@ -551,7 +620,8 @@
           <div class="saas-card reveal" data-category="Product Specs">
             <div class="bento-card-header">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                   <polyline points="16 7 22 7 22 13"></polyline>
                 </svg>
@@ -559,7 +629,8 @@
               <span class="bento-cat-tag font-mono">Product Specs</span>
             </div>
             <h4 class="bento-title">Freight Cost Margin Ratio</h4>
-            <p class="bento-desc">Measures shipping fee as a percentage of item value, highlighting disproportionate long-haul risks.</p>
+            <p class="bento-desc">Measures shipping fee as a percentage of item value, highlighting disproportionate
+              long-haul risks.</p>
 
             <div class="telemetry-widget">
               <div class="telemetry-header font-mono">
@@ -576,7 +647,8 @@
           <div class="saas-card reveal" data-category="Time Features">
             <div class="bento-card-header">
               <div class="icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                   <line x1="2" y1="10" x2="22" y2="10"></line>
                 </svg>
@@ -584,7 +656,8 @@
               <span class="bento-cat-tag font-mono">Time Features</span>
             </div>
             <h4 class="bento-title">Payment Approval Friction</h4>
-            <p class="bento-desc">Captures payment approval lag hours and installment structure impacting warehouse fulfillment release.</p>
+            <p class="bento-desc">Captures payment approval lag hours and installment structure impacting warehouse
+              fulfillment release.</p>
 
             <div class="telemetry-widget">
               <div class="telemetry-header font-mono">
@@ -621,7 +694,8 @@
                 <span class="bento-cat-tag font-mono">Raw Payload</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                   <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -630,7 +704,8 @@
                 </svg>
                 <h3 style="font-size: 1rem; font-weight: 700;">Data Ingestion</h3>
               </div>
-              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Collects timestamps, postal codes, product weight & dimensions, and payment terms at checkout.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Collects timestamps, postal
+                codes, product weight & dimensions, and payment terms at checkout.</p>
             </div>
 
             <!-- Step 2 -->
@@ -640,7 +715,8 @@
                 <span class="bento-cat-tag font-mono">44 Features</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
                   <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"></path>
                   <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
                   <path d="M12 2v2"></path>
@@ -654,7 +730,8 @@
                 </svg>
                 <h3 style="font-size: 1rem; font-weight: 700;">Feature Engine</h3>
               </div>
-              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Computes Haversine distance, freight ratios, volumetric density, and seller fulfillment lag.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Computes Haversine distance,
+                freight ratios, volumetric density, and seller fulfillment lag.</p>
             </div>
 
             <!-- Step 3 -->
@@ -664,12 +741,16 @@
                 <span class="bento-cat-tag font-mono">PyTorch Net</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                  <path d="M12 2a4 4 0 0 0-4 4c0 .8.2 1.5.6 2.1L6 11a4 4 0 0 0-4 4c0 2.2 1.8 4 4 4h12c2.2 0 4-1.8 4-4a4 4 0 0 0-2.6-3.8l-2.6-2.9c.4-.6.6-1.3.6-2.1a4 4 0 0 0-4-4Z"></path>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                  <path
+                    d="M12 2a4 4 0 0 0-4 4c0 .8.2 1.5.6 2.1L6 11a4 4 0 0 0-4 4c0 2.2 1.8 4 4 4h12c2.2 0 4-1.8 4-4a4 4 0 0 0-2.6-3.8l-2.6-2.9c.4-.6.6-1.3.6-2.1a4 4 0 0 0-4-4Z">
+                  </path>
                 </svg>
                 <h3 style="font-size: 1rem; font-weight: 700;">MLP Neural Net</h3>
               </div>
-              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Feeds standardized features through the MLP neural network calibrated for optimal classification.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Feeds standardized features
+                through the MLP neural network calibrated for optimal classification.</p>
             </div>
 
             <!-- Step 4 (Uniform styling, no extra highlight) -->
@@ -679,19 +760,29 @@
                 <span class="bento-cat-tag font-mono">Instant Action</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
                   <path d="m12 14 4-4"></path>
                   <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
                 </svg>
                 <h3 style="font-size: 1rem; font-weight: 700;">Risk Score & Action</h3>
               </div>
-              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Generates low/medium/high risk rating alongside actionable warehouse recommendations.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Generates low/medium/high risk
+                rating alongside actionable warehouse recommendations.</p>
 
               <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);">
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; text-align: center; font-size: 0.65rem; font-weight: 700;" class="font-mono">
-                  <span style="background: var(--risk-low-bg); color: var(--risk-low); padding: 0.2rem; border-radius: 4px;">LOW &lt;30%</span>
-                  <span style="background: var(--risk-med-bg); color: var(--risk-med); padding: 0.2rem; border-radius: 4px;">MED 30-55%</span>
-                  <span style="background: var(--risk-high-bg); color: var(--risk-high); padding: 0.2rem; border-radius: 4px;">HIGH &gt;55%</span>
+                <div
+                  style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; text-align: center; font-size: 0.65rem; font-weight: 700;"
+                  class="font-mono">
+                  <span
+                    style="background: var(--risk-low-bg); color: var(--risk-low); padding: 0.2rem; border-radius: 4px;">LOW
+                    &lt;30%</span>
+                  <span
+                    style="background: var(--risk-med-bg); color: var(--risk-med); padding: 0.2rem; border-radius: 4px;">MED
+                    30-55%</span>
+                  <span
+                    style="background: var(--risk-high-bg); color: var(--risk-high); padding: 0.2rem; border-radius: 4px;">HIGH
+                    &gt;55%</span>
                 </div>
               </div>
             </div>
@@ -700,11 +791,15 @@
 
         <!-- Latency Badge -->
         <div style="display: flex; justify-content: center; margin-top: 3rem;">
-          <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); font-size: 0.8rem; color: var(--text-muted);" class="font-mono">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <div
+            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); font-size: 0.8rem; color: var(--text-muted);"
+            class="font-mono">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
             </svg>
-            Sub-second Server-Side Execution (<span style="color: var(--indigo-brand); font-weight: 700;">&lt; 100ms average</span>)
+            Sub-second Server-Side Execution (<span style="color: var(--indigo-brand); font-weight: 700;">&lt; 100ms
+              average</span>)
           </div>
         </div>
       </section>
@@ -718,13 +813,16 @@
       <section class="section-padding" id="predict-section">
         <div class="section-header">
           <h2 class="section-title">Evaluate Order Late-Delivery Risk</h2>
-          <p class="section-desc">Enter order parameters to execute real-time inference against the 44-feature MLP neural network.</p>
+          <p class="section-desc">Enter order parameters to execute real-time inference against the 44-feature MLP
+            neural network.</p>
         </div>
 
         <!-- API Offline Warning Banner -->
-        <div id="offline-banner" style="display: none; max-width: 900px; margin: 0 auto 2rem; padding: 1rem 1.5rem; background: var(--risk-high-bg); border: 1px solid var(--risk-high-border); border-radius: var(--radius-md); color: var(--risk-high); display: flex; justify-content: space-between; align-items: center;">
+        <div id="offline-banner"
+          style="display: none; max-width: 900px; margin: 0 auto 2rem; padding: 1rem 1.5rem; background: var(--risk-high-bg); border: 1px solid var(--risk-high-border); border-radius: var(--radius-md); color: var(--risk-high); display: flex; justify-content: space-between; align-items: center;">
           <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <line x1="1" y1="1" x2="23" y2="23"></line>
               <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
               <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
@@ -735,10 +833,12 @@
             </svg>
             <div>
               <div style="font-weight: 700; font-size: 0.85rem;">FastAPI Backend Disconnected (Port 8002)</div>
-              <div style="font-size: 0.75rem; opacity: 0.8;">Start backend using <code>python -m uvicorn app.backend.main:app --port 8002</code></div>
+              <div style="font-size: 0.75rem; opacity: 0.8;">Start backend using
+                <code>python -m uvicorn app.backend.main:app --port 8002</code></div>
             </div>
           </div>
-          <button onclick="checkHealth()" style="background: var(--risk-high); color: white; border: none; padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          <button onclick="checkHealth()"
+            style="background: var(--risk-high); color: white; border: none; padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; cursor: pointer;">
             Retry Connection
           </button>
         </div>
@@ -746,17 +846,20 @@
         <!-- Result Container -->
         <div id="result-container" style="display: none; max-width: 900px; margin: 0 auto 2.5rem;">
           <div class="result-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
               <div style="display: flex; align-items: center; gap: 0.75rem;">
                 <div class="brand-icon" style="width: 36px; height: 36px;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="m12 14 4-4"></path>
                     <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
                   </svg>
                 </div>
                 <div>
                   <h3 style="font-size: 1.1rem; font-weight: 800;">Prediction Output</h3>
-                  <span class="font-mono" style="font-size: 0.7rem; color: var(--text-muted);">Inference Time: &lt; 45ms</span>
+                  <span class="font-mono" style="font-size: 0.7rem; color: var(--text-muted);">Inference Time: &lt;
+                    45ms</span>
                 </div>
               </div>
 
@@ -765,22 +868,33 @@
 
             <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: center;">
               <!-- Probability Box -->
-              <div style="background: var(--bg-muted); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
-                <span class="font-mono" style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Late Delivery Probability</span>
-                <div class="font-mono" style="font-size: 3rem; font-weight: 800; color: var(--text-main);" id="res-prob-val">78.4%</div>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">Decision Threshold: <strong style="color: var(--text-main);">10.0%</strong></span>
+              <div
+                style="background: var(--bg-muted); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
+                <span class="font-mono"
+                  style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Late Delivery
+                  Probability</span>
+                <div class="font-mono" style="font-size: 3rem; font-weight: 800; color: var(--text-main);"
+                  id="res-prob-val">78.4%</div>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Decision Threshold: <strong
+                    style="color: var(--text-main);">10.0%</strong></span>
               </div>
 
               <!-- Recommendation Box -->
               <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 <div style="font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--indigo-brand)"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                      d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z">
+                    </path>
                   </svg>
                   Operational Recommendation
                 </div>
-                <div style="background: var(--indigo-tint); border: 1px solid var(--indigo-border); padding: 1rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6;" id="res-recommendation">
-                  Order exhibits extreme interstate distance and tight SLA window. Reassign to priority carrier express lane and verify warehouse dispatch within 12 hours.
+                <div
+                  style="background: var(--indigo-tint); border: 1px solid var(--indigo-border); padding: 1rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6;"
+                  id="res-recommendation">
+                  Order exhibits extreme interstate distance and tight SLA window. Reassign to priority carrier express
+                  lane and verify warehouse dispatch within 12 hours.
                 </div>
               </div>
             </div>
@@ -790,17 +904,21 @@
         <!-- Input Form Section -->
         <div class="form-section">
           <form class="saas-card" id="predict-form" onsubmit="handlePredictSubmit(event)">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
               <div>
                 <h3 style="font-size: 1.1rem; font-weight: 800;">Order Parameter Payload</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Adjust inputs to evaluate real-time delay probability.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Adjust inputs to evaluate real-time delay
+                  probability.</p>
               </div>
               <div style="display: flex; gap: 0.5rem;">
-                <button type="button" onclick="fillPreset('high')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-md); background: var(--risk-high-bg); color: var(--risk-high); border: 1px solid var(--risk-high-border); cursor: pointer;">
-                  Preset: High Risk
+                <button type="button" onclick="fillPreset('low')"
+                  style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-md); background: var(--risk-low-bg); color: var(--risk-low); border: 1px solid var(--risk-low-border); cursor: pointer;">
+                  Sample Values
                 </button>
-                <button type="button" onclick="fillPreset('low')" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-md); background: var(--risk-low-bg); color: var(--risk-low); border: 1px solid var(--risk-low-border); cursor: pointer;">
-                  Preset: Low Risk
+                <button type="button" id="btn-reset-form" onclick="clearForm()"
+                  style="padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.08); color: var(--text-main); border: 1px solid var(--border-color); cursor: pointer;">
+                  🔄 Reset Form
                 </button>
               </div>
             </div>
@@ -808,22 +926,29 @@
             <div class="form-grid">
               <!-- Group 1: Timestamps -->
               <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">1. Purchase & SLA Timestamps</span>
+                <span class="font-mono"
+                  style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">1.
+                  Purchase & SLA Timestamps</span>
                 <div class="form-grid form-grid-2">
                   <div class="form-group">
                     <label class="form-label">Purchase Datetime</label>
-                    <input type="text" class="form-input font-mono" id="purchase_datetime" value="2018-05-15 14:30:00" required>
+                    <input type="text" class="form-input font-mono" id="purchase_datetime" value="2018-05-15 14:30:00"
+                      required>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Estimated Delivery Date</label>
-                    <input type="text" class="form-input font-mono" id="estimated_delivery_date" value="2018-05-28 00:00:00" required>
+                    <input type="text" class="form-input font-mono" id="estimated_delivery_date"
+                      value="2018-05-28 00:00:00" required>
                   </div>
                 </div>
               </div>
 
               <!-- Group 2: ZIP Codes -->
-              <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">2. Geographic Regional Postal Codes</span>
+              <div
+                style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span class="font-mono"
+                  style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">2.
+                  Geographic Regional Postal Codes</span>
                 <div class="form-grid form-grid-2">
                   <div class="form-group">
                     <label class="form-label">Seller ZIP Prefix (5 digits)</label>
@@ -837,8 +962,11 @@
               </div>
 
               <!-- Group 3: Package Specs -->
-              <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">3. Package Dimensions & Weight</span>
+              <div
+                style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span class="font-mono"
+                  style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">3.
+                  Package Dimensions & Weight</span>
                 <div class="form-grid form-grid-4">
                   <div class="form-group">
                     <label class="form-label">Weight (g)</label>
@@ -860,8 +988,11 @@
               </div>
 
               <!-- Group 4: Commercial Terms -->
-              <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">4. Financial & Order Terms</span>
+              <div
+                style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span class="font-mono"
+                  style="font-size: 0.75rem; font-weight: 700; color: var(--indigo-brand); text-transform: uppercase;">4.
+                  Financial & Order Terms</span>
                 <div class="form-grid form-grid-3">
                   <div class="form-group">
                     <label class="form-label">Product Category</label>
@@ -873,7 +1004,8 @@
                   </div>
                   <div class="form-group">
                     <label class="form-label">Freight Value (R$)</label>
-                    <input type="number" step="0.01" class="form-input font-mono" id="freight_value" value="24.50" required>
+                    <input type="number" step="0.01" class="form-input font-mono" id="freight_value" value="24.50"
+                      required>
                   </div>
                 </div>
 
@@ -893,7 +1025,8 @@
                   </div>
                   <div class="form-group">
                     <label class="form-label">Approval Lag (Hrs)</label>
-                    <input type="number" step="0.1" class="form-input font-mono" id="approval_lag_hours" value="2.5" required>
+                    <input type="number" step="0.1" class="form-input font-mono" id="approval_lag_hours" value="2.5"
+                      required>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Item / Seller Count</label>
@@ -905,9 +1038,11 @@
             </div>
 
             <!-- Submit Button -->
-            <div style="display: flex; justify-content: flex-end; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <div
+              style="display: flex; justify-content: flex-end; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
               <button type="submit" class="btn-primary" id="btn-submit-predict">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13"></line>
                   <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                 </svg>
@@ -928,14 +1063,16 @@
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div class="brand-logo" onclick="navigateTo('hero')">
           <div class="brand-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
               <polyline points="16 7 22 7 22 13"></polyline>
             </svg>
           </div>
           <div>
             <span style="font-weight: 800;">Olist Risk Predictor</span>
-            <span class="font-mono" style="font-size: 0.7rem; color: var(--text-muted); display: block;">ML LOGISTICS INTELLIGENCE</span>
+            <span class="font-mono" style="font-size: 0.7rem; color: var(--text-muted); display: block;">ML LOGISTICS
+              INTELLIGENCE</span>
           </div>
         </div>
 
@@ -944,7 +1081,9 @@
         </div>
       </div>
 
-      <div style="padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;" class="font-mono">
+      <div
+        style="padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;"
+        class="font-mono">
         <span>© 2026 Olist Late Delivery Prediction Project. Built with Stripe/Linear-inspired Design System.</span>
         <span>Zero-Data-Leakage Verified</span>
       </div>
@@ -953,4 +1092,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
